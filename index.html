@@ -514,8 +514,16 @@
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify(payload)
                 });
+                
                 if (!response.ok) {
-                    throw new Error(`API 錯誤: ${response.status} ${response.statusText}`);
+                    const status = response.status;
+                    
+                    // NEW: 針對 403 Forbidden 錯誤提供明確的中文引導
+                    if (status === 403) {
+                         throw new Error(`403 Forbidden: 請檢查您的 API Key 權限，或確認 TTS 服務 (${TTS_MODEL}) 是否已啟用。`);
+                    }
+                    
+                    throw new Error(`API 錯誤: ${status} ${response.statusText}`);
                 }
 
                 const result = await response.json();

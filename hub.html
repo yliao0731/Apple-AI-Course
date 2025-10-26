@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Apple Intelligence 課程中心</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body {
+            font-family: 'Inter', 'Noto Sans TC', 'PingFang TC', sans-serif;
+            background-color: #f0f4f8; /* 柔和淺藍色 */
+            color: #1f2937;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+        .header-bg {
+            background: linear-gradient(135deg, #4f46e5 0%, #6366f1 100%);
+        }
+        .card {
+            background-color: white;
+            border-radius: 1.5rem;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.08);
+            transition: transform 0.3s ease-in-out, box-shadow 0.3s;
+        }
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
+        }
+        .link-button {
+            display: block;
+            width: 100%;
+            padding: 1rem;
+            text-align: center;
+            font-weight: 700;
+            border-radius: 0.75rem;
+            transition: background-color 0.3s;
+        }
+    </style>
+</head>
+<body>
+    <!-- 主標題區塊 -->
+    <header class="header-bg text-white p-8 rounded-b-2xl shadow-xl">
+        <div class="max-w-4xl mx-auto">
+            <h1 class="text-4xl sm:text-5xl font-extrabold mb-2 text-center">Apple Intelligence 課程中心</h1>
+            <p class="text-xl font-light opacity-80 pt-2 text-center">開始學習，並用測驗檢視學習成果！</p>
+        </div>
+    </header>
+
+    <main class="max-w-4xl mx-auto p-4 sm:p-6 lg:p-8 flex-grow">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mt-8">
+            
+            <!-- 區塊 1: 學習教材 -->
+            <div class="card p-6 flex flex-col items-center">
+                <div class="text-6xl mb-4 text-indigo-500">📚</div>
+                <h2 class="text-2xl font-bold text-gray-800 mb-3">步驟一：核心教材學習</h2>
+                <p class="text-gray-600 text-center mb-6 flex-grow">
+                    [互動式懶人包] - 快速理解 Apple Intelligence 的[系統基礎]與[三大核心能力]。
+                </p>
+                <a href="index.html" class="link-button bg-indigo-500 text-white hover:bg-indigo-600">
+                    立即進入教材 🚀
+                </a>
+            </div>
+
+            <!-- 區塊 2: 延伸測驗 -->
+            <div class="card p-6 flex flex-col items-center">
+                <div class="text-6xl mb-4 text-green-500">✅</div>
+                <h2 class="text-2xl font-bold text-gray-800 mb-3">步驟二：知識成果檢視</h2>
+                <p class="text-gray-600 text-center mb-6 flex-grow">
+                    [互動式測驗] - 透過[下拉式]、[填空式]題目，測試學習掌握度。
+                </p>
+                <a href="quiz.html" class="link-button bg-green-500 text-white hover:bg-green-600">
+                    開始測驗挑戰 💪
+                </a>
+            </div>
+
+        </div>
+    </main>
+    
+    <footer class="mt-8 p-4 text-center text-gray-500 text-sm">
+        所有檔案需放置在同一目錄下才能正常連結。
+    </footer>
+</body>
+</html>

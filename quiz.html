@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Apple Intelligence (AI) 延伸測驗</title>
+    <!-- 載入 Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* 設置 Inter 字體為優先，並確保中文字體顯示良好 */
+        body {
+            font-family: 'Inter', 'Noto Sans TC', 'PingFang TC', sans-serif;
+            background-color: #eef2ff; /* 淺藍色背景 */
+            color: #1f2937;
+        }
+        .header-bg {
+            background: linear-gradient(135deg, #4f46e5 0%, #6366f1 100%); /* 藍紫色漸變 */
+        }
+        .quiz-card {
+            background-color: white;
+            border-radius: 1.5rem;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+            border-left: 5px solid #4f46e5;
+        }
+        .input-style {
+            padding: 0.75rem;
+            border-radius: 0.5rem;
+            border: 1px solid #d1d5db;
+            width: 100%;
+            transition: border-color 0.3s;
+        }
+        .input-style:focus {
+            outline: none;
+            border-color: #4f46e5;
+            box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.2);
+        }
+        .result-box {
+            border-radius: 1rem;
+            padding: 1.5rem;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <!-- 主標題區塊 -->
+    <header class="header-bg text-white p-6 rounded-b-2xl shadow-xl">
+        <div class="max-w-3xl mx-auto flex justify-between items-center">
+            <div>
+                <h1 class="text-2xl sm:text-3xl font-extrabold mb-1">🧠 Apple Intelligence 延伸測驗</h1>
+                <p class="text-sm font-light opacity-80">共 4 題，檢視您的學習成果！</p>
+            </div>
+            <a href="hub.html" class="bg-gray-500 hover:bg-gray-600 text-white text-sm font-semibold py-2 px-4 rounded-lg transition duration-200 shadow-md">
+                回中心頁
+            </a>
+        </div>
+    </header>
+
+    <main class="max-w-3xl mx-auto p-4 sm:p-6 lg:p-8">
+        
+        <form id="quiz-form" onsubmit="checkAnswers(event)" class="space-y-8">
+            
+            <!-- 測驗卡片 1: 下拉式選擇 (單選) -->
+            <div class="quiz-card">
+                <p class="text-lg font-semibold text-gray-800 mb-4">1. [單選] 蘋果在執行[複雜雲端運算]任務時，為保障用戶資料安全而使用的[私密]技術簡稱是？</p>
+                <select id="q1" class="input-style bg-white" required>
+                    <option value="">-- 請選擇答案 --</option>
+                    <option value="A">AIaaS</option>
+                    <option value="B">PCC</option>
+                    <option value="C">GPU</option>
+                    <option value="D">P2P</option>
+                </select>
+                <div id="q1-feedback" class="mt-2 text-sm font-medium"></div>
+            </div>
+
+            <!-- 測驗卡片 2: 填空題 (輸入式) -->
+            <div class="quiz-card">
+                <p class="text-lg font-semibold text-gray-800 mb-4">2. [填空] Apple Intelligence 的[三大核心能力]之一是[圖像創作]。請寫出該功能的名稱：（兩個字）</p>
+                <input type="text" id="q2" class="input-style" placeholder="請輸入中文名稱" required>
+                <div id="q2-feedback" class="mt-2 text-sm font-medium"></div>
+            </div>
+
+            <!-- 測驗卡片 3: 單選題 (Radio Buttons) -->
+            <div class="quiz-card">
+                <p class="text-lg font-semibold text-gray-800 mb-4">3. [單選] Siri 的[情境感知]能力中，以下哪個情境**最能體現**其[跨 App 整合]的能力？</p>
+                <div class="space-y-3">
+                    <label class="flex items-center space-x-3">
+                        <input type="radio" name="q3" value="A" class="form-radio h-5 w-5 text-indigo-600">
+                        <span class="text-gray-700">[刪除我上次開會時收到的那封郵件]</span>
+                    </label>
+                    <label class="flex items-center space-x-3">
+                        <input type="radio" name="q3" value="B" class="form-radio h-5 w-5 text-indigo-600">
+                        <span class="text-gray-700">設定早上 7 點的鬧鐘</span>
+                    </label>
+                    <label class="flex items-center space-x-3">
+                        <input type="radio" name="q3" value="C" class="form-radio h-5 w-5 text-indigo-600">
+                        <span class="text-gray-700">將系統亮度調整到 50%</span>
+                    </label>
+                </div>
+                <div id="q3-feedback" class="mt-2 text-sm font-medium"></div>
+            </div>
+            
+            <!-- 測驗卡片 4: 單選題 (Radio Buttons) -->
+            <div class="quiz-card">
+                <p class="text-lg font-semibold text-gray-800 mb-4">4. [單選] 哪一個 App 的 AI 功能，支援使用[自然語言搜尋]照片，以及[清除功能 (Clean Up)]來移除背景物體？</p>
+                <div class="space-y-3">
+                    <label class="flex items-center space-x-3">
+                        <input type="radio" name="q4" value="A" class="form-radio h-5 w-5 text-indigo-600">
+                        <span class="text-gray-700">郵件 (Mail)</span>
+                    </label>
+                    <label class="flex items-center space-x-3">
+                        <input type="radio" name="q4" value="B" class="form-radio h-5 w-5 text-indigo-600">
+                        <span class="text-gray-700">照片 (Photos)</span>
+                    </label>
+                    <label class="flex items-center space-x-3">
+                        <input type="radio" name="q4" value="C" class="form-radio h-5 w-5 text-indigo-600">
+                        <span class="text-gray-700">備忘錄 (Notes)</span>
+                    </label>
+                </div>
+                <div id="q4-feedback" class="mt-2 text-sm font-medium"></div>
+            </div>
+
+            <!-- 提交按鈕 -->
+            <div class="text-center">
+                <button type="submit" class="w-full sm:w-1/2 bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-3 px-6 rounded-xl transition duration-300 shadow-lg transform hover:scale-[1.01] focus:outline-none focus:ring-4 focus:ring-indigo-500 focus:ring-opacity-50">
+                    提交測驗並查看結果
+                </button>
+            </div>
+        </form>
+
+        <!-- 結果顯示區塊 (初始隱藏) -->
+        <div id="results-container" class="mt-12 hidden">
+            <h2 class="text-3xl font-extrabold text-center text-indigo-800 mb-6">測驗結果</h2>
+            <div id="score-display" class="result-box bg-white border-4 border-indigo-400">
+                <p class="text-2xl font-bold mb-2">您的得分： <span id="score-text" class="text-indigo-600 text-4xl">0</span> / 4 題</p>
+                <p id="grade-message" class="text-lg mt-4 font-medium"></p>
+            </div>
+            
+            <button onclick="resetQuiz()" class="w-full mt-6 bg-gray-500 hover:bg-gray-600 text-white font-bold py-3 px-6 rounded-xl transition duration-300 shadow-lg focus:outline-none">
+                重新作答
+            </button>
+        </div>
+
+    </main>
+
+    <!-- JavaScript 測驗邏輯 -->
+    <script>
+        // 測驗問題和正確答案設定
+        const questions = [
+            { id: 'q1', type: 'select', answer: 'B', correctFeedback: '答對了！PCC (Private Cloud Compute) 是蘋果保障雲端隱私的關鍵技術。', incorrectFeedback: '錯誤！保障雲端運算隱私的技術簡稱是 PCC。' },
+            { id: 'q2', type: 'input', answer: '影像樂園', correctFeedback: '完全正確！[影像樂園]是生成圖片的核心功能。', incorrectFeedback: '錯誤！該功能名稱是[影像樂園]。' },
+            { id: 'q3', type: 'radio', name: 'q3', answer: 'A', correctFeedback: '答對了！[刪除我上次開會時收到的那封郵件]需要跨越 Siri、郵件和行事曆等多個 App，是最體現跨 App 整合的指令。', incorrectFeedback: '錯誤！跨 App 整合的指令通常涉及兩個或多個 App，選項 A 是最好的例子。' },
+            { id: 'q4', type: 'radio', name: 'q4', answer: 'B', correctFeedback: '正確！[照片 (Photos)] App 具備這兩項強大的 AI 功能。', incorrectFeedback: '錯誤！這些圖像編輯和搜尋功能都整合在[照片 (Photos)] App 中。' }
+        ];
+
+        /**
+         * 檢查所有答案並計算得分
+         * @param {Event} event - 提交事件
+         */
+        function checkAnswers(event) {
+            event.preventDefault(); // 阻止表單默認提交
+            
+            let score = 0;
+            let allAnswered = true;
+
+            questions.forEach(q => {
+                let userAnswer = '';
+                const feedbackDiv = document.getElementById(`${q.id}-feedback`);
+                
+                feedbackDiv.textContent = '';
+                feedbackDiv.className = 'mt-2 text-sm font-medium';
+
+                // 獲取使用者答案
+                if (q.type === 'select' || q.type === 'input') {
+                    userAnswer = document.getElementById(q.id).value.trim();
+                } else if (q.type === 'radio') {
+                    const selected = document.querySelector(`input[name="${q.name}"]:checked`);
+                    if (selected) {
+                        userAnswer = selected.value;
+                    }
+                }
+
+                if (!userAnswer) {
+                    allAnswered = false;
+                    feedbackDiv.textContent = '請先作答此題。';
+                    feedbackDiv.classList.add('text-red-500');
+                    return; // 跳過此題的計分和回饋，但繼續檢查其他題
+                }
+                
+                let isCorrect = false;
+
+                if (q.type === 'input') {
+                    // 填空題：忽略大小寫和前後空格
+                    isCorrect = (userAnswer.toLowerCase() === q.answer.toLowerCase());
+                } else {
+                    // 選擇題：直接比對值
+                    isCorrect = (userAnswer === q.answer);
+                }
+
+                if (isCorrect) {
+                    score++;
+                    feedbackDiv.textContent = q.correctFeedback;
+                    feedbackDiv.classList.add('text-green-600');
+                } else {
+                    feedbackDiv.textContent = q.incorrectFeedback;
+                    feedbackDiv.classList.add('text-red-500');
+                }
+            });
+
+            if (!allAnswered) {
+                 // 如果有未作答的題目，只顯示提醒，不顯示總分
+                const submitButton = event.target.querySelector('button[type="submit"]');
+                submitButton.textContent = '請完成所有題目後再提交！';
+                setTimeout(() => {
+                    submitButton.textContent = '提交測驗並查看結果';
+                }, 2000);
+                return;
+            }
+
+            // 顯示結果
+            document.getElementById('score-text').textContent = score;
+            const gradeMessage = document.getElementById('grade-message');
+            const totalQuestions = questions.length;
+            
+            if (score === totalQuestions) {
+                gradeMessage.textContent = '🎉 恭喜您！所有題目都答對了，您已完全掌握 Apple Intelligence 的核心功能！';
+                gradeMessage.classList.remove('text-red-500', 'text-yellow-600');
+                gradeMessage.classList.add('text-green-600');
+            } else if (score >= totalQuestions / 2) {
+                gradeMessage.textContent = '👍 表現不錯！大多數觀念都正確，請再複習錯誤的題目。';
+                gradeMessage.classList.remove('text-red-500', 'text-green-600');
+                gradeMessage.classList.add('text-yellow-600');
+            } else {
+                gradeMessage.textContent = '需要加強！請回到教材網頁，仔細閱讀核心 AI 功能。';
+                gradeMessage.classList.remove('text-green-600', 'text-yellow-600');
+                gradeMessage.classList.add('text-red-500');
+            }
+
+            document.getElementById('quiz-form').classList.add('hidden');
+            document.getElementById('results-container').classList.remove('hidden');
+        }
+
+        /**
+         * 重設測驗狀態
+         */
+        function resetQuiz() {
+            document.getElementById('quiz-form').reset();
+            document.getElementById('results-container').classList.add('hidden');
+            document.getElementById('quiz-form').classList.remove('hidden');
+            
+            // 清除所有回饋訊息
+            questions.forEach(q => {
+                const feedbackDiv = document.getElementById(`${q.id}-feedback`);
+                feedbackDiv.textContent = '';
+                feedbackDiv.className = 'mt-2 text-sm font-medium';
+            });
+        }
+    </script>
+</body>
+</html>

@@ -3,259 +3,278 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Apple Intelligence (AI) 延伸測驗</title>
+    <title>Apple Intelligence (AI) 教學重點懶人包</title>
     <!-- 載入 Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         /* 設置 Inter 字體為優先，並確保中文字體顯示良好 */
         body {
             font-family: 'Inter', 'Noto Sans TC', 'PingFang TC', sans-serif;
-            background-color: #eef2ff; /* 淺藍色背景 */
+            background-color: #f7f7f7;
             color: #1f2937;
         }
+        /* 標題配色使用 Apple 相關的深色系 */
         .header-bg {
-            background: linear-gradient(135deg, #4f46e5 0%, #6366f1 100%); /* 藍紫色漸變 */
+            background: linear-gradient(135deg, #1f2937 0%, #374151 100%);
         }
-        .quiz-card {
+        /* 卡片底色使用淺色，搭配圓角和陰影 */
+        .card {
             background-color: white;
-            border-radius: 1.5rem;
-            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
-            padding: 1.5rem;
-            margin-bottom: 2rem;
-            border-left: 5px solid #4f46e5;
+            border-radius: 1.5rem; /* 更圓潤的圓角 */
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+            transition: transform 0.3s ease-in-out;
         }
-        .input-style {
-            padding: 0.75rem;
-            border-radius: 0.5rem;
-            border: 1px solid #d1d5db;
-            width: 100%;
-            transition: border-color 0.3s;
+        .card:hover {
+            /* 讓卡片在滑鼠懸停時略微抬升 */
+            transform: translateY(-4px);
         }
-        .input-style:focus {
-            outline: none;
-            border-color: #4f46e5;
-            box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.2);
+        /* 表格樣式 */
+        .custom-table th, .custom-table td {
+            padding: 1rem;
+            text-align: left;
+            border-bottom: 1px solid #e5e7eb;
         }
-        .result-box {
-            border-radius: 1rem;
-            padding: 1.5rem;
-            text-align: center;
+        .custom-table th {
+            background-color: #f3f4f6;
+            color: #4b5563;
+            font-weight: 600;
+        }
+        .custom-table tr:last-child td {
+            border-bottom: none;
+        }
+        /* Accordion 內容預設隱藏，使用過渡效果 */
+        .accordion-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.4s ease-out, padding 0.4s ease-out;
+            padding: 0 1rem;
+        }
+        /* 展開狀態 */
+        .accordion-content.active {
+            max-height: 500px; /* 設置一個足夠大的高度來展示內容 */
+            padding: 1rem;
+        }
+        /* 箭頭旋轉效果 */
+        .accordion-icon {
+            transition: transform 0.4s;
+        }
+        .accordion-icon.rotate {
+            transform: rotate(180deg);
         }
     </style>
 </head>
 <body>
     <!-- 主標題區塊 -->
     <header class="header-bg text-white p-6 rounded-b-2xl shadow-xl">
-        <div class="max-w-3xl mx-auto flex justify-between items-center">
+        <div class="max-w-4xl mx-auto flex justify-between items-center">
             <div>
-                <h1 class="text-2xl sm:text-3xl font-extrabold mb-1">🧠 Apple Intelligence 延伸測驗</h1>
-                <p class="text-sm font-light opacity-80">共 4 題，檢視您的學習成果！</p>
+                <h1 class="text-2xl sm:text-3xl font-extrabold mb-1">📘 Apple Intelligence (AI) 互動教材</h1>
+                <p class="text-sm font-light opacity-80">點擊區塊，探索 AI 核心功能細節！</p>
             </div>
-            <a href="hub.html" class="bg-gray-500 hover:bg-gray-600 text-white text-sm font-semibold py-2 px-4 rounded-lg transition duration-200 shadow-md">
-                回中心頁
-            </a>
+            <div class="space-x-3 flex items-center">
+                <a href="quiz.html" class="bg-indigo-500 hover:bg-indigo-600 text-white text-sm font-semibold py-2 px-4 rounded-lg transition duration-200 shadow-md">
+                    前往測驗
+                </a>
+                <a href="hub.html" class="bg-gray-500 hover:bg-gray-600 text-white text-sm font-semibold py-2 px-4 rounded-lg transition duration-200 shadow-md">
+                    回中心頁
+                </a>
+            </div>
         </div>
     </header>
 
-    <main class="max-w-3xl mx-auto p-4 sm:p-6 lg:p-8">
+    <main class="max-w-4xl mx-auto p-4 sm:p-6 lg:p-8 space-y-12">
         
-        <form id="quiz-form" onsubmit="checkAnswers(event)" class="space-y-8">
-            
-            <!-- 測驗卡片 1: 下拉式選擇 (單選) -->
-            <div class="quiz-card">
-                <p class="text-lg font-semibold text-gray-800 mb-4">1. [單選] 蘋果在執行[複雜雲端運算]任務時，為保障用戶資料安全而使用的[私密]技術簡稱是？</p>
-                <select id="q1" class="input-style bg-white" required>
-                    <option value="">-- 請選擇答案 --</option>
-                    <option value="A">AIaaS</option>
-                    <option value="B">PCC</option>
-                    <option value="C">GPU</option>
-                    <option value="D">P2P</option>
-                </select>
-                <div id="q1-feedback" class="mt-2 text-sm font-medium"></div>
-            </div>
+        <!-- 介紹 -->
+        <section class="card p-6">
+            <h2 class="text-2xl font-bold text-gray-800 mb-4">簡介：系統層級智慧功能</h2>
+            <p class="text-gray-600 leading-relaxed">
+                Apple Intelligence 是蘋果公司首次將[生成式 AI 模型]深度整合到 [iOS、iPadOS 和 macOS] 中的[系統層級智慧功能]。它專注於個人化、隱私保護，並在所有 App 中提供一致的智慧輔助。
+            </p>
+        </section>
 
-            <!-- 測驗卡片 2: 填空題 (輸入式) -->
-            <div class="quiz-card">
-                <p class="text-lg font-semibold text-gray-800 mb-4">2. [填空] Apple Intelligence 的[三大核心能力]之一是[圖像創作]。請寫出該功能的名稱：（兩個字）</p>
-                <input type="text" id="q2" class="input-style" placeholder="請輸入中文名稱" required>
-                <div id="q2-feedback" class="mt-2 text-sm font-medium"></div>
+        <!-- 一、系統與隱私基礎 (表格不需互動，保持參考性) -->
+        <section class="card p-6">
+            <h2 class="text-2xl font-bold text-gray-800 mb-6 flex items-center">
+                <span class="mr-3 text-2xl text-blue-600">🛡️</span>一、系統與隱私基礎
+            </h2>
+            <div class="overflow-x-auto">
+                <table class="custom-table w-full min-w-[600px] border-collapse">
+                    <thead>
+                        <tr>
+                            <th class="rounded-tl-xl">項目</th>
+                            <th>說明與優勢</th>
+                            <th class="rounded-tr-xl">應用場景舉例</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td class="font-semibold text-gray-700 w-1/4">系統級整合</td>
+                            <td class="w-1/2">AI 功能深度植入作業系統核心，可在[所有 App (原生或第三方)]的[輸入框中調用]。</td>
+                            <td class="w-1/4">寫郵件時，可立即請 AI 調整語氣為「專業」或「輕鬆」。</td>
+                        </tr>
+                        <tr>
+                            <td class="font-semibold text-gray-700">隱私優先架構</td>
+                            <td>優先採用 [裝置端處理 (On-Device Processing)]，確保[個人資料不離開裝置]。</td>
+                            <td>總結個人訊息對話內容時，數據完全在 iPhone 內運算。</td>
+                        </tr>
+                        <tr>
+                            <td class="font-semibold text-gray-700">私密雲端運算</td>
+                            <td>若遇複雜任務需要雲端運算，則透過 [Private Cloud Compute (PCC)]，保證資料[不被蘋果存取或儲存]。</td>
+                            <td>生成複雜圖像時，可安全地利用雲端資源而不犧牲隱私。</td>
+                        </tr>
+                    </tbody>
+                </table>
             </div>
+        </section>
 
-            <!-- 測驗卡片 3: 單選題 (Radio Buttons) -->
-            <div class="quiz-card">
-                <p class="text-lg font-semibold text-gray-800 mb-4">3. [單選] Siri 的[情境感知]能力中，以下哪個情境**最能體現**其[跨 App 整合]的能力？</p>
-                <div class="space-y-3">
-                    <label class="flex items-center space-x-3">
-                        <input type="radio" name="q3" value="A" class="form-radio h-5 w-5 text-indigo-600">
-                        <span class="text-gray-700">[刪除我上次開會時收到的那封郵件]</span>
-                    </label>
-                    <label class="flex items-center space-x-3">
-                        <input type="radio" name="q3" value="B" class="form-radio h-5 w-5 text-indigo-600">
-                        <span class="text-gray-700">設定早上 7 點的鬧鐘</span>
-                    </label>
-                    <label class="flex items-center space-x-3">
-                        <input type="radio" name="q3" value="C" class="form-radio h-5 w-5 text-indigo-600">
-                        <span class="text-gray-700">將系統亮度調整到 50%</span>
-                    </label>
+        <!-- 二、三大核心能力 (使用互動式 Accordion) -->
+        <section class="card p-6">
+            <h2 class="text-2xl font-bold text-gray-800 mb-6 flex items-center">
+                <span class="mr-3 text-2xl text-red-500">✨</span>二、三大核心能力 (點擊展開)
+            </h2>
+            <div class="space-y-4">
+                
+                <!-- 1. 寫作工具 -->
+                <div class="bg-yellow-100/50 p-4 rounded-lg border-l-4 border-yellow-500 cursor-pointer hover:bg-yellow-100 transition duration-200" onclick="toggleAccordion('writing-tools')">
+                    <h3 class="text-xl font-bold text-gray-800 flex justify-between items-center">
+                        1. 寫作工具 (Writing Tools)
+                        <span id="icon-writing-tools" class="accordion-icon text-xl">▼</span>
+                    </h3>
                 </div>
-                <div id="q3-feedback" class="mt-2 text-sm font-medium"></div>
-            </div>
-            
-            <!-- 測驗卡片 4: 單選題 (Radio Buttons) -->
-            <div class="quiz-card">
-                <p class="text-lg font-semibold text-gray-800 mb-4">4. [單選] 哪一個 App 的 AI 功能，支援使用[自然語言搜尋]照片，以及[清除功能 (Clean Up)]來移除背景物體？</p>
-                <div class="space-y-3">
-                    <label class="flex items-center space-x-3">
-                        <input type="radio" name="q4" value="A" class="form-radio h-5 w-5 text-indigo-600">
-                        <span class="text-gray-700">郵件 (Mail)</span>
-                    </label>
-                    <label class="flex items-center space-x-3">
-                        <input type="radio" name="q4" value="B" class="form-radio h-5 w-5 text-indigo-600">
-                        <span class="text-gray-700">照片 (Photos)</span>
-                    </label>
-                    <label class="flex items-center space-x-3">
-                        <input type="radio" name="q4" value="C" class="form-radio h-5 w-5 text-indigo-600">
-                        <span class="text-gray-700">備忘錄 (Notes)</span>
-                    </label>
+                <div id="writing-tools" class="accordion-content">
+                    <ul class="list-disc list-inside space-y-2 text-gray-700 ml-4 p-4 border-t border-gray-200">
+                        <li>🎯 [系統級覆蓋]： 無論是寫 [Email、筆記、還是訊息]，皆可[一鍵呼叫 AI 助理]。</li>
+                        <li>[功能包括]： [潤飾 (Rewrite)] (調整語氣、風格)、[校對 (Proofread)] (修正語法、標點)、[總結 (Summarize)] (長文章或郵件摘要)。</li>
+                    </ul>
                 </div>
-                <div id="q4-feedback" class="mt-2 text-sm font-medium"></div>
-            </div>
 
-            <!-- 提交按鈕 -->
-            <div class="text-center">
-                <button type="submit" class="w-full sm:w-1/2 bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-3 px-6 rounded-xl transition duration-300 shadow-lg transform hover:scale-[1.01] focus:outline-none focus:ring-4 focus:ring-indigo-500 focus:ring-opacity-50">
-                    提交測驗並查看結果
-                </button>
-            </div>
-        </form>
+                <!-- 2. 圖像創作 -->
+                <div class="bg-green-100/50 p-4 rounded-lg border-l-4 border-green-500 cursor-pointer hover:bg-green-100 transition duration-200" onclick="toggleAccordion('image-creation')">
+                    <h3 class="text-xl font-bold text-gray-800 flex justify-between items-center">
+                        2. 圖像創作 (Image Creation)
+                        <span id="icon-image-creation" class="accordion-icon text-xl">▼</span>
+                    </h3>
+                </div>
+                <div id="image-creation" class="accordion-content">
+                    <ul class="list-disc list-inside space-y-2 text-gray-700 ml-4 p-4 border-t border-gray-200">
+                        <li>[🎨 影像樂園 (Image Playground)]： 透過[簡單的文字描述]，快速在[裝置上生成圖片]。</li>
+                        <li>[類型]： 支援[動畫 (Animation)]、[素描 (Sketch)]、[插畫 (Illustration)] 三種風格。</li>
+                        <li>[🆕 Genmoji]： 透過[文字描述]，即時生成[全新的、獨創的表情符號]，可用於[訊息或作為反應 (Tapback)]。</li>
+                    </ul>
+                </div>
 
-        <!-- 結果顯示區塊 (初始隱藏) -->
-        <div id="results-container" class="mt-12 hidden">
-            <h2 class="text-3xl font-extrabold text-center text-indigo-800 mb-6">測驗結果</h2>
-            <div id="score-display" class="result-box bg-white border-4 border-indigo-400">
-                <p class="text-2xl font-bold mb-2">您的得分： <span id="score-text" class="text-indigo-600 text-4xl">0</span> / 4 題</p>
-                <p id="grade-message" class="text-lg mt-4 font-medium"></p>
+                <!-- 3. 情境感知 Siri -->
+                <div class="bg-purple-100/50 p-4 rounded-lg border-l-4 border-purple-500 cursor-pointer hover:bg-purple-100 transition duration-200" onclick="toggleAccordion('siri-context')">
+                    <h3 class="text-xl font-bold text-gray-800 flex justify-between items-center">
+                        3. 情境感知 Siri
+                        <span id="icon-siri-context" class="accordion-icon text-xl">▼</span>
+                    </h3>
+                </div>
+                <div id="siri-context" class="accordion-content">
+                    <ul class="list-disc list-inside space-y-2 text-gray-700 ml-4 p-4 border-t border-gray-200">
+                        <li>[👂 更懂你]： Siri 不再僅限於語音指令，可[感知螢幕上的內容]。</li>
+                        <li>[跨 App 整合]： 能執行更複雜、[跨應用程式的指令]，例如：「[把這張照片傳給媽媽]」、「[刪除我上次開會時收到的那封郵件]」。</li>
+                    </ul>
+                </div>
             </div>
-            
-            <button onclick="resetQuiz()" class="w-full mt-6 bg-gray-500 hover:bg-gray-600 text-white font-bold py-3 px-6 rounded-xl transition duration-300 shadow-lg focus:outline-none">
-                重新作答
-            </button>
-        </div>
+        </section>
+
+        <!-- 三、App 深度整合應用 -->
+        <section class="card p-6">
+            <h2 class="text-2xl font-bold text-gray-800 mb-6 flex items-center">
+                <span class="mr-3 text-2xl text-teal-600">📱</span>三、App 深度整合應用
+            </h2>
+            <!-- 表格維持非互動式，作為快速參考 -->
+            <div class="overflow-x-auto">
+                <table class="custom-table w-full min-w-[600px] border-collapse">
+                    <thead>
+                        <tr>
+                            <th class="rounded-tl-xl">App 類別</th>
+                            <th class="rounded-tr-xl">主要 AI 應用功能</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td class="font-semibold text-gray-700 w-1/3">郵件 (Mail)</td>
+                            <td class="w-2/3">[智慧收件箱]： [自動分類高優先級郵件]。[摘要功能]： [長篇郵件一鍵總結]，快速掌握重點。</td>
+                        </tr>
+                        <tr>
+                            <td class="font-semibold text-gray-700">提醒事項 / 備忘錄</td>
+                            <td>[自動任務建議]： 根據[郵件、訊息、行事曆內容]，[主動建議][使用者可加入的待辦事項或任務]。</td>
+                        </tr>
+                        <tr>
+                            <td class="font-semibold text-gray-700">照片 (Photos)</td>
+                            <td>[搜尋強化]： 支援[自然語言搜尋]，例如：「[找出 Jane 穿紅色外套在海邊拍的照片]」。[清除功能 (Clean Up)]： [智慧移除照片中不需要的背景物體或人物]。</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
 
     </main>
+    
+    <!-- 頁尾 -->
+    <footer class="mt-12 p-4 text-center text-gray-500 text-sm">
+        &copy; 2025 Apple Intelligence 教學資料 - 僅供參考與學習
+    </footer>
 
-    <!-- JavaScript 測驗邏輯 -->
+    <!-- JavaScript for Accordion Interactivity -->
     <script>
-        // 測驗問題和正確答案設定
-        const questions = [
-            { id: 'q1', type: 'select', answer: 'B', correctFeedback: '答對了！PCC (Private Cloud Compute) 是蘋果保障雲端隱私的關鍵技術。', incorrectFeedback: '錯誤！保障雲端運算隱私的技術簡稱是 PCC。' },
-            { id: 'q2', type: 'input', answer: '影像樂園', correctFeedback: '完全正確！[影像樂園]是生成圖片的核心功能。', incorrectFeedback: '錯誤！該功能名稱是[影像樂園]。' },
-            { id: 'q3', type: 'radio', name: 'q3', answer: 'A', correctFeedback: '答對了！[刪除我上次開會時收到的那封郵件]需要跨越 Siri、郵件和行事曆等多個 App，是最體現跨 App 整合的指令。', incorrectFeedback: '錯誤！跨 App 整合的指令通常涉及兩個或多個 App，選項 A 是最好的例子。' },
-            { id: 'q4', type: 'radio', name: 'q4', answer: 'B', correctFeedback: '正確！[照片 (Photos)] App 具備這兩項強大的 AI 功能。', incorrectFeedback: '錯誤！這些圖像編輯和搜尋功能都整合在[照片 (Photos)] App 中。' }
-        ];
-
         /**
-         * 檢查所有答案並計算得分
-         * @param {Event} event - 提交事件
+         * 點擊展開/收合面板內容
+         * @param {string} id - 內容區塊的 ID
          */
-        function checkAnswers(event) {
-            event.preventDefault(); // 阻止表單默認提交
+        function toggleAccordion(id) {
+            const content = document.getElementById(id);
+            const icon = document.getElementById(`icon-${id}`);
             
-            let score = 0;
-            let allAnswered = true;
+            // 檢查當前狀態
+            const isActive = content.classList.contains('active');
 
-            questions.forEach(q => {
-                let userAnswer = '';
-                const feedbackDiv = document.getElementById(`${q.id}-feedback`);
-                
-                feedbackDiv.textContent = '';
-                feedbackDiv.className = 'mt-2 text-sm font-medium';
-
-                // 獲取使用者答案
-                if (q.type === 'select' || q.type === 'input') {
-                    userAnswer = document.getElementById(q.id).value.trim();
-                } else if (q.type === 'radio') {
-                    const selected = document.querySelector(`input[name="${q.name}"]:checked`);
-                    if (selected) {
-                        userAnswer = selected.value;
-                    }
+            // 關閉所有其他面板 (確保一次只打開一個)
+            document.querySelectorAll('.accordion-content').forEach(item => {
+                if (item.id !== id) {
+                    item.classList.remove('active');
+                    item.style.maxHeight = 0;
                 }
-
-                if (!userAnswer) {
-                    allAnswered = false;
-                    feedbackDiv.textContent = '請先作答此題。';
-                    feedbackDiv.classList.add('text-red-500');
-                    return; // 跳過此題的計分和回饋，但繼續檢查其他題
-                }
-                
-                let isCorrect = false;
-
-                if (q.type === 'input') {
-                    // 填空題：忽略大小寫和前後空格
-                    isCorrect = (userAnswer.toLowerCase() === q.answer.toLowerCase());
-                } else {
-                    // 選擇題：直接比對值
-                    isCorrect = (userAnswer === q.answer);
-                }
-
-                if (isCorrect) {
-                    score++;
-                    feedbackDiv.textContent = q.correctFeedback;
-                    feedbackDiv.classList.add('text-green-600');
-                } else {
-                    feedbackDiv.textContent = q.incorrectFeedback;
-                    feedbackDiv.classList.add('text-red-500');
+            });
+            document.querySelectorAll('.accordion-icon').forEach(item => {
+                if (item.id !== `icon-${id}`) {
+                    item.classList.remove('rotate');
                 }
             });
 
-            if (!allAnswered) {
-                 // 如果有未作答的題目，只顯示提醒，不顯示總分
-                const submitButton = event.target.querySelector('button[type="submit"]');
-                submitButton.textContent = '請完成所有題目後再提交！';
-                setTimeout(() => {
-                    submitButton.textContent = '提交測驗並查看結果';
-                }, 2000);
-                return;
-            }
 
-            // 顯示結果
-            document.getElementById('score-text').textContent = score;
-            const gradeMessage = document.getElementById('grade-message');
-            const totalQuestions = questions.length;
-            
-            if (score === totalQuestions) {
-                gradeMessage.textContent = '🎉 恭喜您！所有題目都答對了，您已完全掌握 Apple Intelligence 的核心功能！';
-                gradeMessage.classList.remove('text-red-500', 'text-yellow-600');
-                gradeMessage.classList.add('text-green-600');
-            } else if (score >= totalQuestions / 2) {
-                gradeMessage.textContent = '👍 表現不錯！大多數觀念都正確，請再複習錯誤的題目。';
-                gradeMessage.classList.remove('text-red-500', 'text-green-600');
-                gradeMessage.classList.add('text-yellow-600');
+            if (!isActive) {
+                // 展開
+                content.classList.add('active');
+                // 設置 max-height 為內容的實際高度，以實現平滑過渡
+                content.style.maxHeight = content.scrollHeight + "px";
+                icon.classList.add('rotate');
             } else {
-                gradeMessage.textContent = '需要加強！請回到教材網頁，仔細閱讀核心 AI 功能。';
-                gradeMessage.classList.remove('text-green-600', 'text-yellow-600');
-                gradeMessage.classList.add('text-red-500');
+                // 收合
+                content.classList.remove('active');
+                content.style.maxHeight = 0;
+                icon.classList.remove('rotate');
             }
-
-            document.getElementById('quiz-form').classList.add('hidden');
-            document.getElementById('results-container').classList.remove('hidden');
         }
-
-        /**
-         * 重設測驗狀態
-         */
-        function resetQuiz() {
-            document.getElementById('quiz-form').reset();
-            document.getElementById('results-container').classList.add('hidden');
-            document.getElementById('quiz-form').classList.remove('hidden');
-            
-            // 清除所有回饋訊息
-            questions.forEach(q => {
-                const feedbackDiv = document.getElementById(`${q.id}-feedback`);
-                feedbackDiv.textContent = '';
-                feedbackDiv.className = 'mt-2 text-sm font-medium';
+        
+        // 確保在視窗大小改變時，如果內容是展開的，maxHeight 也能正確更新
+        window.addEventListener('resize', () => {
+            document.querySelectorAll('.accordion-content.active').forEach(content => {
+                content.style.maxHeight = content.scrollHeight + "px";
             });
-        }
+        });
+        
+        // 初始化時，如果內容為隱藏狀態，確保 max-height 為 0
+        document.addEventListener('DOMContentLoaded', () => {
+            document.querySelectorAll('.accordion-content').forEach(content => {
+                if (!content.classList.contains('active')) {
+                    content.style.maxHeight = 0;
+                }
+            });
+        });
+
     </script>
 </body>
 </html>

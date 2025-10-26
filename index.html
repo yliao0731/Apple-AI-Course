@@ -280,8 +280,8 @@
     <script>
         // --- 狀態和配置 ---
         const TTS_MODEL = "gemini-2.5-flash-preview-tts";
-        // 語音使用 Charon (男性)
-        const TTS_VOICE = "Charon"; 
+        // 語音已更改為 Puck (歡快/活潑)，原為 Charon
+        const TTS_VOICE = "Puck"; 
 
         // IP 角色更名為 小萊恩
         const NPC_TITLE = "小萊恩"; 
@@ -454,7 +454,7 @@
             const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/${TTS_MODEL}:generateContent?key=${apiKey}`;
 
             const payload = {
-                contents: [{ parts: [{ text: `Say in a professional and informative tone: ${message}` }] }],
+                contents: [{ parts: [{ text: `Say in a relaxed and cheerful tone: ${message}` }] }],
                 generationConfig: {
                     responseModalities: ["AUDIO"],
                     speechConfig: { voiceConfig: { prebuiltVoiceConfig: { voiceName: TTS_VOICE } } }
@@ -502,7 +502,7 @@
                     audio = new Audio(audioUrl);
                     
                     audio.onplay = () => {
-                        guidanceText.textContent = `播放中... (${NPC_TITLE}: Charon)`;
+                        guidanceText.textContent = `播放中... (${NPC_TITLE}: Puck)`;
                     };
                     audio.onended = () => {
                         stopLoading(`點擊頭像，聆聽 ${NPC_TITLE} 的介紹。`);

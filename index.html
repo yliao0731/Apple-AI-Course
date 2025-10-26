@@ -6,7 +6,6 @@
     <title>Apple Intelligence (AI) 教學重點懶人包</title>
     <!-- 載入 Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- 移除 Tone.js (背景音樂函式庫) -->
     <style>
         /* 設置 Inter 字體為優先，並確保中文字體顯示良好 */
         body {
@@ -62,14 +61,6 @@
         .accordion-icon.rotate {
             transform: rotate(180deg);
         }
-        /* Loading 旋轉動畫 */
-        @keyframes spin {
-            from { transform: rotate(0deg); }
-            to { transform: rotate(360deg); }
-        }
-        .spinner {
-            animation: spin 1s linear infinite;
-        }
         /* 提醒動畫 */
         .shake {
             animation: shake 0.5s cubic-bezier(.36,.07,.19,.97) both;
@@ -82,7 +73,7 @@
             40%, 60% { transform: translate3d(4px, 0, 0); }
         }
 
-        /* NEW: 持續提醒光暈 (更明顯的視覺震動/催促) */
+        /* NEW: 持續提醒光暈 (視覺催促) */
         @keyframes pulse-glow {
             0% { box-shadow: 0 0 0 0 rgba(253, 224, 71, 0.7); } /* Yellow-200 */
             70% { box-shadow: 0 0 0 10px rgba(253, 224, 71, 0); }
@@ -114,23 +105,17 @@
                 </div>
             </div>
 
-            <!-- NPC 語音引導區塊 (小萊恩 IP) -->
-            <div id="npc-container" class="mt-4 p-3 bg-white/10 backdrop-blur-sm rounded-xl flex items-center shadow-lg">
-                <!-- 圖像按鈕 - 使用上傳的 IP 圖檔 -->
-                <button id="speaker-btn" onclick="handleSpeakerClick()" class="relative p-0 mr-3 rounded-full bg-transparent transition duration-200 focus:outline-none focus:ring-2 focus:ring-indigo-300 transform hover:scale-105" aria-label="播放語音引導">
-                    <!-- 漫畫 IP 圖片 (已從 video 替換為 img) -->
+            <!-- NPC 語音引導區塊 (小萊恩 IP) - 已移除語音功能，改為純文字顯示 -->
+            <div id="npc-container" class="mt-4 p-3 bg-white/10 backdrop-blur-sm rounded-xl flex items-center shadow-lg transition duration-300">
+                <!-- 圖像顯示 - 小萊恩 IP -->
+                <div class="relative p-0 mr-3 rounded-full bg-transparent">
                     <img id="speaker-icon" 
                            src="uploaded:老萊恩去背.png-a7f1b070-e704-41fd-85fc-1c478bbb0588" 
                            alt="小萊恩 IP 圖形" 
                            class="w-12 h-12 rounded-full object-cover">
-                    
-                    <!-- Loading Spinner (絕對定位疊在圖片上方) -->
-                    <div id="loading-spinner" class="hidden absolute inset-0 rounded-full flex items-center justify-center bg-gray-800/80">
-                        <svg class="w-6 h-6 text-white spinner" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path fill="currentColor" d="M12 2C6.477 2 2 6.477 2 12s4.477 10 10 10 10-4.477 10-10S17.523 2 12 2zm0 18c-4.411 0-8-3.589-8-8s3.589-8 8-8 8 3.589 8 8-3.589 8-8 8z"/><path fill="currentColor" d="M12 4.5v3a4.5 4.5 0 00-4.5 4.5H4.5A7.5 7.5 0 0112 4.5z"/></svg>
-                    </div>
-                </button>
+                </div>
                 
-                <span id="guidance-text" class="text-white text-sm">點擊頭像，聆聽小萊恩的介紹。</span>
+                <span id="guidance-text" class="text-white text-sm font-medium">點擊頭像，開始小萊恩的介紹。</span>
             </div>
             
         </div>
@@ -276,273 +261,52 @@
         &copy; 2025 Apple Intelligence 教學資料 - 僅供參考與學習
     </footer>
 
-    <!-- JavaScript for Interactivity and TTS -->
+    <!-- JavaScript for Interactivity -->
     <script>
-        // --- 狀態和配置 ---
-        const TTS_MODEL = "gemini-2.5-flash-preview-tts";
-        // 語音已更改為 Fenrir (活潑男聲)，原為 Puck
-        const TTS_VOICE = "Fenrir"; 
-
-        // IP 角色更名為 小萊恩
+        // --- 狀態和配置 (純文字模式) ---
         const NPC_TITLE = "小萊恩"; 
-        // 語音文本使用新名稱
-        const TTS_INITIAL = `哈囉，我是 ${NPC_TITLE}！歡迎來到 Apple Intelligence 課程。請點擊下方的【三大核心能力】區塊，開始探索智慧功能和隱私基礎吧！`; 
-        const TTS_REMINDER = `嘿，同學！我是 ${NPC_TITLE}！時間到了，請記得點擊任一核心能力區塊 (例如：寫作工具) 展開詳細內容喔！`;
-        const TTS_COMPLETED_PROMPT = "課程已全部完成！請點擊頭像，聽取前往測驗的引導。"; // 文字提示
-        const TTS_QUIZ_INSTRUCTION = "恭喜！您已完成三大核心能力的學習。現在，請點擊右上角的 [前往測驗] 按鈕，檢視您的學習成果吧！"; // 實際語音內容
+        
+        // 文字引導內容
+        const TEXT_INITIAL = `我是 ${NPC_TITLE}！歡迎來到 Apple Intelligence 課程。請點擊下方的【三大核心能力】區塊，開始探索智慧功能和隱私基礎吧！`; 
+        const TEXT_REMINDER = `嘿，同學！我是 ${NPC_TITLE}！時間到了，請記得點擊任一核心能力區塊 (例如：寫作工具) 展開詳細內容喔！`;
+        const TEXT_COMPLETED_PROMPT = `課程已全部完成！請點擊右上角的 [前往測驗] 按鈕，檢視您的學習成果吧！`; 
 
-        // 1. 不同的讚美方式 & 2. 內容重點
+        // 不同的讚美方式 & 內容重點
         const SECTION_PRAISES = {
-            // 讚美多樣化
             'writing-tools': "做得太棒了！您成功解鎖了第一項功能，表現非常優秀。", 
             'image-creation': "哇，進度神速！圖像創作是 AI 最吸睛的能力之一，做得很好。", 
             'siri-context': "學得真快！情境感知 Siri 是實現跨應用程式智慧的關鍵喔，您掌握得非常棒。" 
         };
         const SECTION_SUMMARIES = { 
-            'writing-tools': "【寫作工具】是您在郵件、備忘錄中最實用的 AI 助理。它能幫您【一鍵潤飾、校對或總結】長篇文字，大幅提升寫作效率。",
-            'image-creation': "您正在了解【圖像創作】能力。這包含了【影像樂園】和 【Genmoji】，讓您能快速生成【各種風格的圖片】和【獨特的表情符號】。",
-            'siri-context': "【情境感知 Siri】是 Apple Intelligence 的核心。她現在能【理解螢幕上的內容】，並執行【跨應用程式的複雜指令】。"
+            'writing-tools': "接著，【寫作工具】是您在郵件、備忘錄中最實用的 AI 助理。它能幫您【一鍵潤飾、校對或總結】長篇文字，大幅提升寫作效率。",
+            'image-creation': "接著，您正在了解【圖像創作】能力。這包含了【影像樂園】和 【Genmoji】，讓您能快速生成【各種風格的圖片】和【獨特的表情符號】。",
+            'siri-context': "接著，【情境感知 Siri】是 Apple Intelligence 的核心。她現在能【理解螢幕上的內容】，並執行【跨應用程式的複雜指令】。"
         };
         
         const completedSections = new Set();
         let inactivityTimer = null;
-        let audio = null; 
-        // 追蹤當前的語音指令狀態：initial -> active (學習中) -> quiz_pending_5s (5秒倒數) -> quiz_ready (可點擊聽取測驗指令)
+        // 狀態：initial -> active (學習中) -> quiz_pending_5s (5秒倒數) -> finished (已完成)
         let currentInstruction = 'initial'; 
 
         // --- DOM 元素 ---
-        const speakerBtn = document.getElementById('speaker-btn');
-        const speakerIcon = document.getElementById('speaker-icon');
-        const loadingSpinner = document.getElementById('loading-spinner');
         const guidanceText = document.getElementById('guidance-text');
         const coreSectionsContainer = document.getElementById('core-sections');
         const npcContainer = document.getElementById('npc-container'); 
-        // 移除 musicControl 變數
 
-        // --- 播放與控制邏輯 ---
-
-        /** * 啟用 Loading 狀態並更新文字 */
-        function startLoading(message) {
-            if (audio && !audio.paused) {
-                audio.pause();
-                audio.currentTime = 0;
-            }
-            speakerBtn.disabled = true;
-            speakerIcon.classList.add('hidden'); // 隱藏 IP 圖像/影片
-            loadingSpinner.classList.remove('hidden'); // 顯示 Spinner
-            guidanceText.textContent = message;
-            // 停止瀏覽器語音合成
-            window.speechSynthesis.cancel(); 
-        }
-
-        /** * 停止 Loading 狀態並恢復按鈕 */
-        function stopLoading(message) {
-            guidanceText.textContent = message;
-            speakerBtn.disabled = false;
-            speakerIcon.classList.remove('hidden'); // 顯示 IP 圖像/影片
-            loadingSpinner.classList.add('hidden'); // 隱藏 Spinner
-        }
+        // --- 互動與計時器邏輯 ---
         
-        /**
-         * 瀏覽器內建語音備援 (Local Fallback)
-         * @param {string} message - 要說的文本
-         */
-        function speakLocalFallback(message) {
-            startLoading(`🔊 備援語音播放中... (${NPC_TITLE})`);
-            
-            const utterance = new SpeechSynthesisUtterance(message);
-            utterance.lang = 'zh-TW'; // 設定為中文
-            
-            utterance.onend = () => {
-                stopLoading(`點擊頭像，聆聽 ${NPC_TITLE} 的介紹。`);
-                if (currentInstruction === 'active') {
-                    startInactivityTimer();
-                } else if (currentInstruction === 'quiz_ready') {
-                    guidanceText.textContent = "請點擊 [前往測驗] 按鈕，開始檢視學習成果！";
-                }
-            };
-
-            // 確保音訊播放結束時才停止 loading
-            try {
-                 window.speechSynthesis.speak(utterance);
-            } catch (error) {
-                 console.error("瀏覽器語音備援失敗:", error);
-                 stopLoading(`備援語音失敗。請檢查您的瀏覽器設定。`);
-            }
-        }
-
-
-        /**
-         * 處理喇叭按鈕的點擊事件，根據狀態播放正確的語音
-         */
-        function handleSpeakerClick() {
-            if (speakerBtn.disabled) return; 
-
-            // 點擊按鈕，移除持續的光暈提醒
-            npcContainer.classList.remove('reminder-glow');
-
-            let messageToSpeak;
-
-            if (currentInstruction === 'initial' || currentInstruction === 'active') {
-                messageToSpeak = TTS_INITIAL;
-                currentInstruction = 'active'; 
-            } else if (currentInstruction === 'reminder') {
-                messageToSpeak = TTS_REMINDER;
-                currentInstruction = 'active'; 
-            } else if (currentInstruction === 'quiz_ready') {
-                 messageToSpeak = TTS_QUIZ_INSTRUCTION;
-                 currentInstruction = 'finished'; 
-            } else if (currentInstruction === 'quiz_pending_5s' || currentInstruction === 'finished') {
-                guidanceText.textContent = currentInstruction === 'finished' ? "課程已結束，請前往測驗。" : "請稍候，課程完成提醒即將發出。";
-                return;
-            }
-            
-            // 點擊後隨即出現語音 (立刻呼叫 API)
-            speakGuidance(messageToSpeak);
-            
-            coreSectionsContainer.classList.remove('shake');
-            document.querySelector('header').classList.remove('shake');
-        }
-
-        // --- TTS 輔助函數 (PCM to WAV 轉換) ---
-        function base64ToArrayBuffer(base64) {
-            const binary_string = window.atob(base64);
-            const len = binary_string.length;
-            const bytes = new Uint8Array(len);
-            for (let i = 0; i < len; i++) {
-                bytes[i] = binary_string.charCodeAt(i);
-            }
-            return bytes.buffer;
-        }
-
-        function pcmToWav(samples, sampleRate) {
-            const buffer = new ArrayBuffer(44 + samples.length * 2);
-            const view = new DataView(buffer);
-            
-            writeString(view, 0, 'RIFF'); 
-            view.setUint32(4, 36 + samples.length * 2, true);
-            writeString(view, 8, 'WAVE');
-            writeString(view, 12, 'fmt '); 
-            view.setUint32(16, 16, true);
-            view.setUint16(20, 1, true); 
-            view.setUint16(22, 1, true); 
-            view.setUint32(24, sampleRate, true);
-            view.setUint32(28, sampleRate * 2, true);
-            view.setUint16(32, 2, true);
-            view.setUint16(34, 16, true);
-            writeString(view, 36, 'data');
-            view.setUint32(40, samples.length * 2, true);
-
-            let offset = 44;
-            for (let i = 0; i < samples.length; i++, offset += 2) {
-                view.setInt16(offset, samples[i], true);
-            }
-            
-            function writeString(view, offset, string) {
-                for (let i = 0; i < string.length; i++) {
-                    view.setUint8(offset + i, string.charCodeAt(i));
-                }
-            }
-            return new Blob([view], { type: 'audio/wav' });
-        }
-
-        async function speakGuidance(message) {
-            resetInactivityTimer();
-            startLoading(`${NPC_TITLE} 正在生成語音中，請稍候...`);
-            
-            const apiKey = ""; 
-            const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/${TTS_MODEL}:generateContent?key=${apiKey}`;
-
-            const payload = {
-                // 修正語音要求：使用 "relaxed and cheerful tone" 來確保調性
-                contents: [{ parts: [{ text: `Say in a relaxed and cheerful tone: ${message}` }] }],
-                generationConfig: {
-                    responseModalities: ["AUDIO"],
-                    // TTS_VOICE 已切換為 Fenrir
-                    speechConfig: { voiceConfig: { prebuiltVoiceConfig: { voiceName: TTS_VOICE } } }
-                },
-                model: TTS_MODEL
-            };
-
-            try {
-                const response = await fetch(apiUrl, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(payload)
-                });
-                
-                if (!response.ok) {
-                    const status = response.status;
-                    
-                    // NEW: 403 錯誤處理，切換至本地備援語音
-                    if (status === 403) {
-                         console.warn("TTS API 權限不足 (403 Forbidden)。切換至瀏覽器本地語音備援。");
-                         stopLoading(`🚨 錯誤 403：API 權限不足，正使用本地備援語音。`);
-                         speakLocalFallback(message);
-                         return; // 成功切換備援，結束函式
-                    }
-                    
-                    throw new Error(`API 錯誤: ${status} ${response.statusText}`);
-                }
-
-                const result = await response.json();
-                const part = result?.candidates?.[0]?.content?.parts?.[0];
-                const audioData = part?.inlineData?.data;
-                const mimeType = part?.inlineData?.mimeType;
-
-                if (audioData && mimeType && mimeType.startsWith("audio/L16")) {
-                    const rateMatch = mimeType.match(/rate=(\d+)/);
-                    if (!rateMatch) throw new Error("無法解析採樣率。");
-                    
-                    const sampleRate = parseInt(rateMatch[1], 10);
-                    const pcmBuffer = base64ToArrayBuffer(audioData);
-                    const pcm16 = new Int16Array(pcmBuffer);
-                    const wavBlob = pcmToWav(pcm16, sampleRate);
-                    const audioUrl = URL.createObjectURL(wavBlob);
-                    
-                    // 確保每次都創建新的 Audio 實例
-                    audio = new Audio(audioUrl);
-                    
-                    audio.onplay = () => {
-                        // 狀態顯示更新為 Fenrir
-                        guidanceText.textContent = `播放中... (${NPC_TITLE}: Fenrir)`;
-                    };
-                    audio.onended = () => {
-                        stopLoading(`點擊頭像，聆聽 ${NPC_TITLE} 的介紹。`);
-                        
-                        if (currentInstruction === 'active') {
-                             startInactivityTimer();
-                        } else if (currentInstruction === 'quiz_ready') {
-                             guidanceText.textContent = "請點擊 [前往測驗] 按鈕，開始檢視學習成果！";
-                        }
-                    };
-                    // 播放音訊
-                    audio.play();
-                } else {
-                    throw new Error("API 返回的音訊數據結構無效或缺少數據。");
-                }
-            } catch (error) {
-                console.error("TTS 發生嚴重錯誤:", error);
-                // 最終備援：如果連備援都失敗，則切換至本地備援
-                speakLocalFallback(message);
-            }
-        }
-
-
-        // --- 課程狀態與計時器邏輯 (保持原樣) ---
-        
-        /** * 啟動 5 秒不活動提醒計時器 */
+        /** * 啟動 5 秒不活動提醒計時器 (純文字催促) */
         function startInactivityTimer() {
             clearTimeout(inactivityTimer);
             if (currentInstruction === 'active') {
                 inactivityTimer = setTimeout(() => {
                     // 達到 5 秒催促點
                     currentInstruction = 'reminder';
-                    guidanceText.textContent = "超過 5 秒未互動！請點擊頭像，聆聽小萊恩的催促提醒！";
-                    coreSectionsContainer.classList.add('shake'); // 核心區塊晃動 (瞬時)
-                    setTimeout(() => coreSectionsContainer.classList.remove('shake'), 1000);
+                    guidanceText.textContent = TEXT_REMINDER;
                     
-                    // 維持震動/閃爍直到點擊 (使用持續光暈)
+                    // 視覺提醒：晃動並持續光暈
+                    coreSectionsContainer.classList.add('shake'); 
+                    setTimeout(() => coreSectionsContainer.classList.remove('shake'), 1000);
                     npcContainer.classList.add('reminder-glow'); 
 
                 }, 5000); 
@@ -552,8 +316,9 @@
         /** * 重設不活動計時器 */
         function resetInactivityTimer() {
             clearTimeout(inactivityTimer);
-            // 移除光暈，無論是否在提醒狀態
+            // 移除光暈和晃動
             npcContainer.classList.remove('reminder-glow'); 
+            coreSectionsContainer.classList.remove('shake');
             
             if (currentInstruction === 'active') {
                 startInactivityTimer();
@@ -561,7 +326,7 @@
         }
 
         /**
-         * 處理 Accordion 點擊事件，包含狀態追蹤和語音反饋
+         * 處理 Accordion 點擊事件，包含狀態追蹤和文字反饋
          */
         function handleAccordionClick(id) {
             resetInactivityTimer(); 
@@ -570,20 +335,18 @@
             
             const content = document.getElementById(id);
             if (!content.classList.contains('active')) {
+                // 如果是收合，不給反饋，只重設計時器
                 return;
             }
             
-            // 檢查是否已完成，並給予反饋
+            // 檢查是否已完成，並給予反饋 (只有第一次點擊時給予鼓勵和總結)
             if (!completedSections.has(id)) {
                 completedSections.add(id);
                 
-                // 不同的讚美方式 + 內容總結
+                // 不同的讚美方式 + 內容總結 (純文字顯示)
                 const praise = SECTION_PRAISES[id];
                 const summary = SECTION_SUMMARIES[id];
-                const fullMessage = `${praise}！您成功展開了區塊。接著，${summary}`;
-                
-                // 語音出現的速度 (點擊後隨即開始 API 呼叫)
-                speakGuidance(fullMessage);
+                guidanceText.textContent = `${praise}！ ${summary}`;
                 
                 // 檢查課程完成度
                 if (completedSections.size === 3) {
@@ -593,13 +356,14 @@
                     // 課程完成後 5 秒提醒
                     setTimeout(() => {
                         if (currentInstruction === 'quiz_pending_5s') {
-                            currentInstruction = 'quiz_ready'; 
-                            guidanceText.textContent = TTS_COMPLETED_PROMPT; 
+                            currentInstruction = 'finished'; 
+                            guidanceText.textContent = TEXT_COMPLETED_PROMPT; 
+                            
                             // 頂部區塊晃動 (瞬時)
                             document.querySelector('header').classList.add('shake'); 
                             setTimeout(() => document.querySelector('header').classList.remove('shake'), 1000);
 
-                            // 維持閃爍直到點擊
+                            // 維持閃爍直到用戶點擊網頁任意處 (body onclick)
                             npcContainer.classList.add('reminder-glow');
                         }
                     }, 5000); 
@@ -607,11 +371,10 @@
                     currentInstruction = 'active'; 
                 }
             } else {
-                 guidanceText.textContent = "您已經學過這一區塊囉！";
+                 // 已學習過，給予簡單提示
+                 guidanceText.textContent = "您已經學過這一區塊囉！請繼續探索其他核心能力。";
                  currentInstruction = 'active';
             }
-
-            coreSectionsContainer.classList.remove('shake');
         }
 
         // --- 輔助函數：Accordion 展開/收合邏輯 (保持原樣) ---
@@ -621,6 +384,7 @@
             
             const isActive = content.classList.contains('active');
 
+            // 關閉所有其他展開的區塊
             document.querySelectorAll('.accordion-content').forEach(item => {
                 if (item.id !== id) {
                     item.classList.remove('active');
@@ -633,6 +397,7 @@
                 }
             });
 
+            // 展開或收合目標區塊
             if (!isActive) {
                 content.classList.add('active');
                 // 使用 scrollHeight 確保內容完全展開
@@ -648,9 +413,12 @@
 
         // --- 頁面初始化 ---
         window.addEventListener('load', () => {
-            // 初始提示在 DOM 中設置，等待用戶點擊頭像按鈕
-            guidanceText.textContent = `點擊頭像，開始 ${NPC_TITLE} 的介紹。`;
+            // 初始引導
+            guidanceText.textContent = TEXT_INITIAL;
+            currentInstruction = 'active';
+            startInactivityTimer(); // 啟動初始 5 秒計時
             
+            // 確保所有區塊初始為收合狀態
             document.querySelectorAll('.accordion-content').forEach(content => {
                 if (!content.classList.contains('active')) {
                     content.style.maxHeight = 0;

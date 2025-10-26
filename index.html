@@ -6,6 +6,8 @@
     <title>Apple Intelligence (AI) 教學重點懶人包</title>
     <!-- 載入 Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
+    <!-- 載入 Tone.js (用於背景音樂) -->
+    <script src="https://unpkg.com/tone@14.7.58/build/Tone.js"></script>
     <style>
         /* 設置 Inter 字體為優先，並確保中文字體顯示良好 */
         body {
@@ -61,24 +63,74 @@
         .accordion-icon.rotate {
             transform: rotate(180deg);
         }
+        /* Loading 旋轉動畫 */
+        @keyframes spin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+        .spinner {
+            animation: spin 1s linear infinite;
+        }
+        /* 提醒動畫 */
+        .shake {
+            animation: shake 0.5s cubic-bezier(.36,.07,.19,.97) both;
+            transform: translate3d(0, 0, 0);
+        }
+        @keyframes shake {
+            10%, 90% { transform: translate3d(-1px, 0, 0); }
+            20%, 80% { transform: translate3d(2px, 0, 0); }
+            30%, 50%, 70% { transform: translate3d(-4px, 0, 0); }
+            40%, 60% { transform: translate3d(4px, 0, 0); }
+        }
+
+        /* NEW: 持續提醒光暈 (更明顯的視覺震動/催促) */
+        @keyframes pulse-glow {
+            0% { box-shadow: 0 0 0 0 rgba(253, 224, 71, 0.7); } /* Yellow-200 */
+            70% { box-shadow: 0 0 0 10px rgba(253, 224, 71, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(253, 224, 71, 0); }
+        }
+        .reminder-glow {
+            animation: pulse-glow 1.5s infinite;
+            border: 2px solid #FDE047; /* Yellow-400 */
+        }
     </style>
 </head>
-<body>
+<body onclick="resetInactivityTimer()">
     <!-- 主標題區塊 -->
     <header class="header-bg text-white p-6 rounded-b-2xl shadow-xl">
-        <div class="max-w-4xl mx-auto flex justify-between items-center">
-            <div>
-                <h1 class="text-2xl sm:text-3xl font-extrabold mb-1">📘 Apple Intelligence (AI) 互動教材</h1>
-                <p class="text-sm font-light opacity-80">點擊區塊，探索 AI 核心功能細節！</p>
+        <div class="max-w-4xl mx-auto">
+            <div class="flex justify-between items-center mb-2">
+                <div>
+                    <h1 class="text-2xl sm:text-3xl font-extrabold mb-1">📘 Apple Intelligence (AI) 互動教材</h1>
+                    <p class="text-sm font-light opacity-80">點擊區塊，探索 AI 核心功能細節！</p>
+                </div>
+                <!-- 導航按鈕 -->
+                <div class="space-x-3 flex items-center">
+                    <a id="music-control" onclick="toggleMusic(event)" class="text-xs bg-gray-700 hover:bg-gray-800 text-white font-semibold py-2 px-3 rounded-lg transition duration-200 shadow-md cursor-pointer select-none">
+                        🔇 背景音樂: 暫停 (點擊播放)
+                    </a>
+                    <a href="quiz.html" class="bg-indigo-500 hover:bg-indigo-600 text-white text-sm font-semibold py-2 px-4 rounded-lg transition duration-200 shadow-md">
+                        前往測驗
+                    </a>
+                    <a href="hub.html" class="bg-gray-500 hover:bg-gray-600 text-white text-sm font-semibold py-2 px-4 rounded-lg transition duration-200 shadow-md">
+                        回中心頁
+                    </a>
+                </div>
             </div>
-            <div class="space-x-3 flex items-center">
-                <a href="quiz.html" class="bg-indigo-500 hover:bg-indigo-600 text-white text-sm font-semibold py-2 px-4 rounded-lg transition duration-200 shadow-md">
-                    前往測驗
-                </a>
-                <a href="hub.html" class="bg-gray-500 hover:bg-gray-600 text-white text-sm font-semibold py-2 px-4 rounded-lg transition duration-200 shadow-md">
-                    回中心頁
-                </a>
+
+            <!-- NPC 語音引導區塊 (AI 助教) -->
+            <div id="npc-container" class="mt-4 p-3 bg-white/10 backdrop-blur-sm rounded-xl flex items-center shadow-lg">
+                <button id="speaker-btn" onclick="handleSpeakerClick()" class="p-2 mr-3 rounded-full bg-indigo-500 hover:bg-indigo-600 transition duration-200 focus:outline-none focus:ring-2 focus:ring-indigo-300 transform hover:scale-105" aria-label="播放語音引導">
+                    <!-- AI 助教 (IP 圖形造型 - 簡約機器人頭部) -->
+                    <svg id="speaker-icon" class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 12H4m16 0l-4 4m4-4l-4-4M16 16v2a2 2 0 01-2 2h-4a2 2 0 01-2-2v-2m4-10V4a2 2 0 00-2-2H8a2 2 0 00-2 2v2m10 0v2m-4-2V4a2 2 0 01-2-2H8a2 2 0 00-2 2v2"/>
+                    </svg>
+                    <!-- Loading Spinner (初始隱藏) -->
+                    <svg id="loading-spinner" class="hidden w-6 h-6 text-white spinner" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path fill="currentColor" d="M12 2C6.477 2 2 6.477 2 12s4.477 10 10 10 10-4.477 10-10S17.523 2 12 2zm0 18c-4.411 0-8-3.589-8-8s3.589-8 8-8 8 3.589 8 8-3.589 8-8 8z"/><path fill="currentColor" d="M12 4.5v3a4.5 4.5 0 00-4.5 4.5H4.5A7.5 7.5 0 0112 4.5z"/></svg>
+                </button>
+                <span id="guidance-text" class="text-white text-sm">點擊喇叭圖示，聆聽 AI 助教的介紹。</span>
             </div>
+            
         </div>
     </header>
 
@@ -128,14 +180,14 @@
         </section>
 
         <!-- 二、三大核心能力 (使用互動式 Accordion) -->
-        <section class="card p-6">
+        <section id="core-sections" class="card p-6">
             <h2 class="text-2xl font-bold text-gray-800 mb-6 flex items-center">
                 <span class="mr-3 text-2xl text-red-500">✨</span>二、三大核心能力 (點擊展開)
             </h2>
             <div class="space-y-4">
                 
                 <!-- 1. 寫作工具 -->
-                <div class="bg-yellow-100/50 p-4 rounded-lg border-l-4 border-yellow-500 cursor-pointer hover:bg-yellow-100 transition duration-200" onclick="toggleAccordion('writing-tools')">
+                <div id="writing-tools-accordion" class="bg-yellow-100/50 p-4 rounded-lg border-l-4 border-yellow-500 cursor-pointer hover:bg-yellow-100 transition duration-200" onclick="handleAccordionClick('writing-tools')">
                     <h3 class="text-xl font-bold text-gray-800 flex justify-between items-center">
                         1. 寫作工具 (Writing Tools)
                         <span id="icon-writing-tools" class="accordion-icon text-xl">▼</span>
@@ -149,7 +201,7 @@
                 </div>
 
                 <!-- 2. 圖像創作 -->
-                <div class="bg-green-100/50 p-4 rounded-lg border-l-4 border-green-500 cursor-pointer hover:bg-green-100 transition duration-200" onclick="toggleAccordion('image-creation')">
+                <div id="image-creation-accordion" class="bg-green-100/50 p-4 rounded-lg border-l-4 border-green-500 cursor-pointer hover:bg-green-100 transition duration-200" onclick="handleAccordionClick('image-creation')">
                     <h3 class="text-xl font-bold text-gray-800 flex justify-between items-center">
                         2. 圖像創作 (Image Creation)
                         <span id="icon-image-creation" class="accordion-icon text-xl">▼</span>
@@ -164,7 +216,7 @@
                 </div>
 
                 <!-- 3. 情境感知 Siri -->
-                <div class="bg-purple-100/50 p-4 rounded-lg border-l-4 border-purple-500 cursor-pointer hover:bg-purple-100 transition duration-200" onclick="toggleAccordion('siri-context')">
+                <div id="siri-context-accordion" class="bg-purple-100/50 p-4 rounded-lg border-l-4 border-purple-500 cursor-pointer hover:bg-purple-100 transition duration-200" onclick="handleAccordionClick('siri-context')">
                     <h3 class="text-xl font-bold text-gray-800 flex justify-between items-center">
                         3. 情境感知 Siri
                         <span id="icon-siri-context" class="accordion-icon text-xl">▼</span>
@@ -218,20 +270,363 @@
         &copy; 2025 Apple Intelligence 教學資料 - 僅供參考與學習
     </footer>
 
-    <!-- JavaScript for Accordion Interactivity -->
+    <!-- JavaScript for Interactivity and TTS -->
     <script>
+        // --- 狀態和配置 ---
+        const TTS_MODEL = "gemini-2.5-flash-preview-tts";
+        const TTS_VOICE = "Kore"; 
+
+        const NPC_TITLE = "AI 助教"; // 3. 命名 AI 助教
+        const TTS_INITIAL = `歡迎來到 Apple Intelligence 課程。我是您的 ${NPC_TITLE}，Kore。請點擊下方的三個核心能力區塊，開始探索智慧功能和隱私基礎吧！`;
+        const TTS_REMINDER = `嗨，您還在嗎？我是 ${NPC_TITLE}！請點擊任一核心能力區塊 (例如：寫作工具) 展開詳細內容喔！`;
+        const TTS_COMPLETED_PROMPT = "課程已完成！請點擊喇叭圖示，聽取前往測驗的引導。"; // 文字提示
+        const TTS_QUIZ_INSTRUCTION = "恭喜！您已完成三大核心能力的學習。現在，請點擊右上角的 [前往測驗] 按鈕，檢視您的學習成果吧！"; // 實際語音內容
+
+        // 1. 不同的讚美方式 & 2. 內容重點
+        const SECTION_PRAISES = {
+            'writing-tools': "做得太棒了！您成功解鎖了第一項功能。", 
+            'image-creation': "哇，進度神速！圖像創作是 AI 最吸睛的能力之一。", 
+            'siri-context': "學得真快！情境感知 Siri 是實現跨應用程式智慧的關鍵喔。" 
+        };
+        const SECTION_SUMMARIES = { 
+            'writing-tools': "[寫作工具]是您在郵件、備忘錄中最實用的 AI 助理。它能幫您[一鍵潤飾、校對或總結]長篇文字，大幅提升寫作效率。",
+            'image-creation': "您正在了解[圖像創作]能力。這包含了[影像樂園]和 [Genmoji]，讓您能快速生成[各種風格的圖片]和[獨特的表情符號]。",
+            'siri-context': "[情境感知 Siri]是 Apple Intelligence 的核心。她現在能[理解螢幕上的內容]，並執行[跨應用程式的複雜指令]。"
+        };
+        
+        const completedSections = new Set();
+        let inactivityTimer = null;
+        let audio = null; 
+        // 追蹤當前的語音指令狀態：initial -> active (學習中) -> quiz_pending_5s (5秒倒數) -> quiz_ready (可點擊聽取測驗指令)
+        let currentInstruction = 'initial'; 
+
+        // --- DOM 元素 ---
+        const speakerBtn = document.getElementById('speaker-btn');
+        const speakerIcon = document.getElementById('speaker-icon');
+        const loadingSpinner = document.getElementById('loading-spinner');
+        const guidanceText = document.getElementById('guidance-text');
+        const coreSectionsContainer = document.getElementById('core-sections');
+        const npcContainer = document.getElementById('npc-container'); 
+        const musicControl = document.getElementById('music-control');
+
+        // --- 背景音樂 (Tone.js) ---
+        let polySynth;
+        let transportInitialized = false;
+
+        function setupMusic() {
+            if (transportInitialized) return;
+
+            // 1. Setup Master Volume (Soft background)
+            const vol = new Tone.Volume(-14).toDestination(); 
+
+            // 2. Setup Synth/Instrument (Electric Piano/Ambient)
+            polySynth = new Tone.PolySynth(Tone.AMSynth, {
+                oscillator: { type: "sine" },
+                envelope: { attack: 0.05, decay: 0.1, sustain: 0.3, release: 1 }
+            }).connect(vol);
+            
+            // 3. Simple Jazz/Ambient Chord Progression (Cmaj7 - Fmaj7 - Bbmaj7 - Ebmaj7)
+            const chords = [
+                ["C4", "E4", "G4", "B4"],
+                ["F4", "A4", "C5", "E5"],
+                ["Bb3", "D4", "F4", "A4"],
+                ["Eb4", "G4", "Bb4", "D5"]
+            ];
+
+            let index = 0;
+            
+            // Create a loop
+            new Tone.Loop(time => {
+                const chord = chords[index % chords.length];
+                polySynth.triggerAttackRelease(chord, '2n', time);
+                index++;
+            }, '2n').start(0); 
+
+            Tone.Transport.bpm.value = 60; // Slow, ambient tempo
+            Tone.Transport.start();
+            transportInitialized = true;
+        }
+
         /**
-         * 點擊展開/收合面板內容
-         * @param {string} id - 內容區塊的 ID
+         * 處理音樂播放/暫停的控制
+         * @param {Event} e - 點擊事件
          */
+        function toggleMusic(e) {
+            e.preventDefault(); // 阻止連結跳轉
+
+            if (!transportInitialized) {
+                // 首次點擊，啟動 Tone.js 並播放音樂
+                Tone.start().then(() => {
+                    setupMusic();
+                    musicControl.textContent = '🎶 背景音樂: 播放中 (點擊暫停)';
+                });
+            } else {
+                // 已經初始化，切換播放/暫停狀態
+                if (Tone.Transport.state === "started") {
+                    Tone.Transport.pause();
+                    musicControl.textContent = '🔇 背景音樂: 已暫停 (點擊播放)';
+                } else {
+                    Tone.Transport.start();
+                    musicControl.textContent = '🎶 背景音樂: 播放中 (點擊暫停)';
+                }
+            }
+        }
+
+
+        // --- 播放與控制邏輯 (與上一版修正錯誤的邏輯相同) ---
+
+        /** * 啟用 Loading 狀態並更新文字 */
+        function startLoading(message) {
+            if (audio && !audio.paused) {
+                audio.pause();
+                audio.currentTime = 0;
+            }
+            speakerBtn.disabled = true;
+            speakerIcon.classList.add('hidden');
+            loadingSpinner.classList.remove('hidden');
+            guidanceText.textContent = message;
+        }
+
+        /** * 停止 Loading 狀態並恢復按鈕 */
+        function stopLoading(message) {
+            guidanceText.textContent = message;
+            speakerBtn.disabled = false;
+            speakerIcon.classList.remove('hidden');
+            loadingSpinner.classList.add('hidden');
+        }
+
+        /**
+         * 處理喇叭按鈕的點擊事件，根據狀態播放正確的語音
+         */
+        function handleSpeakerClick() {
+            if (speakerBtn.disabled) return; 
+
+            // 確保音樂啟動 (雖然不是主要功能，但首次點擊也要嘗試啟動 Tone.js)
+            if (!transportInitialized) {
+                Tone.start().then(() => setupMusic());
+            }
+
+            // 點擊按鈕，移除持續的光暈提醒
+            npcContainer.classList.remove('reminder-glow');
+
+            if (currentInstruction === 'initial' || currentInstruction === 'active') {
+                speakGuidance(TTS_INITIAL);
+                currentInstruction = 'active'; 
+            } else if (currentInstruction === 'reminder') {
+                speakGuidance(TTS_REMINDER);
+                currentInstruction = 'active'; 
+            } else if (currentInstruction === 'quiz_ready') {
+                 // 3. 課程完成後引導進行測驗
+                 speakGuidance(TTS_QUIZ_INSTRUCTION);
+                 currentInstruction = 'finished'; 
+            } else if (currentInstruction === 'quiz_pending_5s' || currentInstruction === 'finished') {
+                guidanceText.textContent = currentInstruction === 'finished' ? "課程已結束，請前往測驗。" : "請稍候，課程完成提醒即將發出。";
+            }
+            
+            coreSectionsContainer.classList.remove('shake');
+            document.querySelector('header').classList.remove('shake');
+        }
+
+        // --- TTS 輔助函數 (保持與上版一致) ---
+        function base64ToArrayBuffer(base64) {
+            const binary_string = window.atob(base64);
+            const len = binary_string.length;
+            const bytes = new Uint8Array(len);
+            for (let i = 0; i < len; i++) {
+                bytes[i] = binary_string.charCodeAt(i);
+            }
+            return bytes.buffer;
+        }
+
+        function pcmToWav(samples, sampleRate) {
+            const buffer = new ArrayBuffer(44 + samples.length * 2);
+            const view = new DataView(buffer);
+            
+            writeString(view, 0, 'RIFF'); 
+            view.setUint32(4, 36 + samples.length * 2, true);
+            writeString(view, 8, 'WAVE');
+            writeString(view, 12, 'fmt '); 
+            view.setUint32(16, 16, true);
+            view.setUint16(20, 1, true); 
+            view.setUint16(22, 1, true); 
+            view.setUint32(24, sampleRate, true);
+            view.setUint32(28, sampleRate * 2, true);
+            view.setUint16(32, 2, true);
+            view.setUint16(34, 16, true);
+            writeString(view, 36, 'data');
+            view.setUint32(40, samples.length * 2, true);
+
+            let offset = 44;
+            for (let i = 0; i < samples.length; i++, offset += 2) {
+                view.setInt16(offset, samples[i], true);
+            }
+            
+            function writeString(view, offset, string) {
+                for (let i = 0; i < string.length; i++) {
+                    view.setUint8(offset + i, string.charCodeAt(i));
+                }
+            }
+            return new Blob([view], { type: 'audio/wav' });
+        }
+
+        async function speakGuidance(message) {
+            resetInactivityTimer();
+            // TTS 延遲是網路延遲和 API 處理時間，無法消除。
+            startLoading(`${NPC_TITLE} 正在生成語音中，請稍候...`);
+            
+            const apiKey = ""; 
+            const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/${TTS_MODEL}:generateContent?key=${apiKey}`;
+
+            const payload = {
+                contents: [{ parts: [{ text: `Say in a professional and informative tone: ${message}` }] }],
+                generationConfig: {
+                    responseModalities: ["AUDIO"],
+                    speechConfig: { voiceConfig: { prebuiltVoiceConfig: { voiceName: TTS_VOICE } } }
+                },
+                model: TTS_MODEL
+            };
+
+            try {
+                const response = await fetch(apiUrl, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+                if (!response.ok) throw new Error(`API 錯誤: ${response.statusText}`);
+
+                const result = await response.json();
+                const part = result?.candidates?.[0]?.content?.parts?.[0];
+                const audioData = part?.inlineData?.data;
+                const mimeType = part?.inlineData?.mimeType;
+
+                if (audioData && mimeType && mimeType.startsWith("audio/L16")) {
+                    const rateMatch = mimeType.match(/rate=(\d+)/);
+                    if (!rateMatch) throw new Error("無法解析採樣率。");
+                    
+                    const sampleRate = parseInt(rateMatch[1], 10);
+                    const pcmBuffer = base64ToArrayBuffer(audioData);
+                    const pcm16 = new Int16Array(pcmBuffer);
+                    const wavBlob = pcmToWav(pcm16, sampleRate);
+                    const audioUrl = URL.createObjectURL(wavBlob);
+                    
+                    audio = new Audio(audioUrl);
+                    
+                    audio.onplay = () => {
+                        guidanceText.textContent = `播放中... (${NPC_TITLE}: Kore)`;
+                    };
+                    audio.onended = () => {
+                        stopLoading(`點擊喇叭圖示，聆聽 ${NPC_TITLE} 的介紹。`);
+                        
+                        if (currentInstruction === 'active') {
+                             startInactivityTimer();
+                        } else if (currentInstruction === 'quiz_ready') {
+                             // 課程完成後的引導，直接設定最終文字
+                             guidanceText.textContent = "請點擊 [前往測驗] 按鈕，開始檢視學習成果！";
+                        }
+                    };
+                    audio.play();
+                } else {
+                    throw new Error("API 返回的音訊數據結構無效。");
+                }
+            } catch (error) {
+                console.error("TTS 發生錯誤:", error);
+                stopLoading(`語音生成失敗。 (錯誤: ${error.message})`);
+            }
+        }
+
+
+        // --- 課程狀態與計時器邏輯 ---
+        
+        /** * 啟動 5 秒不活動提醒計時器 */
+        function startInactivityTimer() {
+            clearTimeout(inactivityTimer);
+            if (currentInstruction === 'active') {
+                inactivityTimer = setTimeout(() => {
+                    // 達到 5 秒催促點
+                    currentInstruction = 'reminder';
+                    guidanceText.textContent = "超過 5 秒未互動！請點擊喇叭圖示，聆聽 AI 助教的催促提醒！";
+                    coreSectionsContainer.classList.add('shake'); // 核心區塊晃動 (瞬時)
+                    setTimeout(() => coreSectionsContainer.classList.remove('shake'), 1000);
+                    
+                    // 1. 維持震動/閃爍直到點擊 (使用持續光暈)
+                    npcContainer.classList.add('reminder-glow'); 
+
+                }, 5000); 
+            }
+        }
+
+        /** * 重設不活動計時器 */
+        function resetInactivityTimer() {
+            clearTimeout(inactivityTimer);
+            // 移除光暈，無論是否在提醒狀態
+            npcContainer.classList.remove('reminder-glow'); 
+            
+            if (currentInstruction === 'active') {
+                startInactivityTimer();
+            }
+        }
+
+        /**
+         * 處理 Accordion 點擊事件，包含狀態追蹤和語音反饋
+         */
+        function handleAccordionClick(id) {
+            resetInactivityTimer(); 
+            
+            toggleAccordion(id);
+            
+            const content = document.getElementById(id);
+            if (!content.classList.contains('active')) {
+                return;
+            }
+            
+            // 2. 檢查是否已完成，並給予反饋
+            if (!completedSections.has(id)) {
+                completedSections.add(id);
+                
+                // 1. 不同的讚美方式 + 內容總結
+                const praise = SECTION_PRAISES[id];
+                const summary = SECTION_SUMMARIES[id];
+                const fullMessage = `${praise}！您成功展開了區塊。接著，${summary}`;
+                
+                // 3. 語音出現的速度 (點擊後隨即開始 API 呼叫)
+                speakGuidance(fullMessage);
+                
+                // 3. 檢查課程完成度
+                if (completedSections.size === 3) {
+                    // 進入 5 秒倒數狀態
+                    currentInstruction = 'quiz_pending_5s';
+                    
+                    // 2. 課程完成後 5 秒提醒
+                    setTimeout(() => {
+                        if (currentInstruction === 'quiz_pending_5s') {
+                            currentInstruction = 'quiz_ready'; 
+                            guidanceText.textContent = TTS_COMPLETED_PROMPT; 
+                            // 頂部區塊晃動 (瞬時)
+                            document.querySelector('header').classList.add('shake'); 
+                            setTimeout(() => document.querySelector('header').classList.remove('shake'), 1000);
+
+                            // 1. 維持閃爍直到點擊
+                            npcContainer.classList.add('reminder-glow');
+                        }
+                    }, 5000); 
+                } else {
+                    currentInstruction = 'active'; 
+                }
+            } else {
+                 guidanceText.textContent = "您已經學過這一區塊囉！";
+                 currentInstruction = 'active';
+            }
+
+            coreSectionsContainer.classList.remove('shake');
+        }
+
+        // --- 輔助函數：Accordion 展開/收合邏輯 (保持原樣) ---
         function toggleAccordion(id) {
             const content = document.getElementById(id);
             const icon = document.getElementById(`icon-${id}`);
             
-            // 檢查當前狀態
             const isActive = content.classList.contains('active');
 
-            // 關閉所有其他面板 (確保一次只打開一個)
             document.querySelectorAll('.accordion-content').forEach(item => {
                 if (item.id !== id) {
                     item.classList.remove('active');
@@ -244,37 +639,33 @@
                 }
             });
 
-
             if (!isActive) {
-                // 展開
                 content.classList.add('active');
-                // 設置 max-height 為內容的實際高度，以實現平滑過渡
                 content.style.maxHeight = content.scrollHeight + "px";
                 icon.classList.add('rotate');
             } else {
-                // 收合
                 content.classList.remove('active');
                 content.style.maxHeight = 0;
                 icon.classList.remove('rotate');
             }
         }
-        
-        // 確保在視窗大小改變時，如果內容是展開的，maxHeight 也能正確更新
-        window.addEventListener('resize', () => {
-            document.querySelectorAll('.accordion-content.active').forEach(content => {
-                content.style.maxHeight = content.scrollHeight + "px";
-            });
-        });
-        
-        // 初始化時，如果內容為隱藏狀態，確保 max-height 為 0
-        document.addEventListener('DOMContentLoaded', () => {
+
+
+        // --- 頁面初始化 ---
+        window.addEventListener('load', () => {
+            // 初始提示在 DOM 中設置，等待用戶點擊喇叭按鈕
+            guidanceText.textContent = `點擊喇叭圖示，開始 ${NPC_TITLE} 的介紹。`;
+            
             document.querySelectorAll('.accordion-content').forEach(content => {
                 if (!content.classList.contains('active')) {
                     content.style.maxHeight = 0;
                 }
             });
+            
+            // 初始化音樂控制按鈕文本
+            musicControl.textContent = '🔇 背景音樂: 暫停 (點擊播放)';
         });
-
     </script>
 </body>
 </html>
+

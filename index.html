@@ -114,17 +114,23 @@
                 </div>
             </div>
 
-            <!-- NPC 語音引導區塊 (AI 助教) -->
+            <!-- NPC 語音引導區塊 (小萊恩 IP) -->
             <div id="npc-container" class="mt-4 p-3 bg-white/10 backdrop-blur-sm rounded-xl flex items-center shadow-lg">
-                <button id="speaker-btn" onclick="handleSpeakerClick()" class="p-2 mr-3 rounded-full bg-indigo-500 hover:bg-indigo-600 transition duration-200 focus:outline-none focus:ring-2 focus:ring-indigo-300 transform hover:scale-105" aria-label="播放語音引導">
-                    <!-- AI 助教 (IP 圖形造型 - 簡約機器人頭部) -->
-                    <svg id="speaker-icon" class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 12H4m16 0l-4 4m4-4l-4-4M16 16v2a2 2 0 01-2 2h-4a2 2 0 01-2-2v-2m4-10V4a2 2 0 00-2-2H8a2 2 0 00-2 2v2m10 0v2m-4-2V4a2 2 0 01-2-2H8a2 2 0 00-2 2v2"/>
-                    </svg>
-                    <!-- Loading Spinner (初始隱藏) -->
-                    <svg id="loading-spinner" class="hidden w-6 h-6 text-white spinner" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path fill="currentColor" d="M12 2C6.477 2 2 6.477 2 12s4.477 10 10 10 10-4.477 10-10S17.523 2 12 2zm0 18c-4.411 0-8-3.589-8-8s3.589-8 8-8 8 3.589 8 8-3.589 8-8 8z"/><path fill="currentColor" d="M12 4.5v3a4.5 4.5 0 00-4.5 4.5H4.5A7.5 7.5 0 0112 4.5z"/></svg>
+                <!-- 圖像按鈕 - 使用上傳的 IP 圖檔 -->
+                <button id="speaker-btn" onclick="handleSpeakerClick()" class="relative p-0 mr-3 rounded-full bg-transparent transition duration-200 focus:outline-none focus:ring-2 focus:ring-indigo-300 transform hover:scale-105" aria-label="播放語音引導">
+                    <!-- 漫畫 IP 圖片 (已從 video 替換為 img) -->
+                    <img id="speaker-icon" 
+                           src="uploaded:老萊恩去背.png-a7f1b070-e704-41fd-85fc-1c478bbb0588" 
+                           alt="小萊恩 IP 圖形" 
+                           class="w-12 h-12 rounded-full object-cover">
+                    
+                    <!-- Loading Spinner (絕對定位疊在圖片上方) -->
+                    <div id="loading-spinner" class="hidden absolute inset-0 rounded-full flex items-center justify-center bg-gray-800/80">
+                        <svg class="w-6 h-6 text-white spinner" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path fill="currentColor" d="M12 2C6.477 2 2 6.477 2 12s4.477 10 10 10 10-4.477 10-10S17.523 2 12 2zm0 18c-4.411 0-8-3.589-8-8s3.589-8 8-8 8 3.589 8 8-3.589 8-8 8z"/><path fill="currentColor" d="M12 4.5v3a4.5 4.5 0 00-4.5 4.5H4.5A7.5 7.5 0 0112 4.5z"/></svg>
+                    </div>
                 </button>
-                <span id="guidance-text" class="text-white text-sm">點擊喇叭圖示，聆聽 AI 助教的介紹。</span>
+                
+                <span id="guidance-text" class="text-white text-sm">點擊頭像，聆聽小萊恩的介紹。</span>
             </div>
             
         </div>
@@ -274,19 +280,23 @@
     <script>
         // --- 狀態和配置 ---
         const TTS_MODEL = "gemini-2.5-flash-preview-tts";
-        const TTS_VOICE = "Kore"; 
+        // 語音使用 Charon (男性)
+        const TTS_VOICE = "Charon"; 
 
-        const NPC_TITLE = "AI 助教"; // 3. 命名 AI 助教
-        const TTS_INITIAL = `歡迎來到 Apple Intelligence 課程。我是您的 ${NPC_TITLE}，Kore。請點擊下方的三個核心能力區塊，開始探索智慧功能和隱私基礎吧！`;
-        const TTS_REMINDER = `嗨，您還在嗎？我是 ${NPC_TITLE}！請點擊任一核心能力區塊 (例如：寫作工具) 展開詳細內容喔！`;
-        const TTS_COMPLETED_PROMPT = "課程已完成！請點擊喇叭圖示，聽取前往測驗的引導。"; // 文字提示
+        // IP 角色更名為 小萊恩
+        const NPC_TITLE = "小萊恩"; 
+        // 語音文本使用新名稱
+        const TTS_INITIAL = `哈囉，我是 ${NPC_TITLE}！歡迎來到 Apple Intelligence 課程。請點擊下方的【三大核心能力】區塊，開始探索智慧功能和隱私基礎吧！`; 
+        const TTS_REMINDER = `嘿，同學！我是 ${NPC_TITLE}！時間到了，請記得點擊任一核心能力區塊 (例如：寫作工具) 展開詳細內容喔！`;
+        const TTS_COMPLETED_PROMPT = "課程已全部完成！請點擊頭像，聽取前往測驗的引導。"; // 文字提示
         const TTS_QUIZ_INSTRUCTION = "恭喜！您已完成三大核心能力的學習。現在，請點擊右上角的 [前往測驗] 按鈕，檢視您的學習成果吧！"; // 實際語音內容
 
         // 1. 不同的讚美方式 & 2. 內容重點
         const SECTION_PRAISES = {
-            'writing-tools': "做得太棒了！您成功解鎖了第一項功能。", 
-            'image-creation': "哇，進度神速！圖像創作是 AI 最吸睛的能力之一。", 
-            'siri-context': "學得真快！情境感知 Siri 是實現跨應用程式智慧的關鍵喔。" 
+            // 讚美多樣化
+            'writing-tools': "做得太棒了！您成功解鎖了第一項功能，表現非常優秀。", 
+            'image-creation': "哇，進度神速！圖像創作是 AI 最吸睛的能力之一，做得很好。", 
+            'siri-context': "學得真快！情境感知 Siri 是實現跨應用程式智慧的關鍵喔，您掌握得非常棒。" 
         };
         const SECTION_SUMMARIES = { 
             'writing-tools': "【寫作工具】是您在郵件、備忘錄中最實用的 AI 助理。它能幫您【一鍵潤飾、校對或總結】長篇文字，大幅提升寫作效率。",
@@ -318,8 +328,8 @@
                 audio.currentTime = 0;
             }
             speakerBtn.disabled = true;
-            speakerIcon.classList.add('hidden');
-            loadingSpinner.classList.remove('hidden');
+            speakerIcon.classList.add('hidden'); // 隱藏 IP 圖像/影片
+            loadingSpinner.classList.remove('hidden'); // 顯示 Spinner
             guidanceText.textContent = message;
             // 停止瀏覽器語音合成
             window.speechSynthesis.cancel(); 
@@ -329,8 +339,8 @@
         function stopLoading(message) {
             guidanceText.textContent = message;
             speakerBtn.disabled = false;
-            speakerIcon.classList.remove('hidden');
-            loadingSpinner.classList.add('hidden');
+            speakerIcon.classList.remove('hidden'); // 顯示 IP 圖像/影片
+            loadingSpinner.classList.add('hidden'); // 隱藏 Spinner
         }
         
         /**
@@ -344,7 +354,7 @@
             utterance.lang = 'zh-TW'; // 設定為中文
             
             utterance.onend = () => {
-                stopLoading(`點擊喇叭圖示，聆聽 ${NPC_TITLE} 的介紹。`);
+                stopLoading(`點擊頭像，聆聽 ${NPC_TITLE} 的介紹。`);
                 if (currentInstruction === 'active') {
                     startInactivityTimer();
                 } else if (currentInstruction === 'quiz_ready') {
@@ -492,10 +502,10 @@
                     audio = new Audio(audioUrl);
                     
                     audio.onplay = () => {
-                        guidanceText.textContent = `播放中... (${NPC_TITLE}: Kore)`;
+                        guidanceText.textContent = `播放中... (${NPC_TITLE}: Charon)`;
                     };
                     audio.onended = () => {
-                        stopLoading(`點擊喇叭圖示，聆聽 ${NPC_TITLE} 的介紹。`);
+                        stopLoading(`點擊頭像，聆聽 ${NPC_TITLE} 的介紹。`);
                         
                         if (currentInstruction === 'active') {
                              startInactivityTimer();
@@ -510,11 +520,8 @@
                 }
             } catch (error) {
                 console.error("TTS 發生嚴重錯誤:", error);
-                // 最終備援：如果連備援都失敗，則只更新文字提示
-                stopLoading(`語音生成失敗。 (錯誤: ${error.message})`);
-                if (currentInstruction === 'active') {
-                    startInactivityTimer();
-                }
+                // 最終備援：如果連備援都失敗，則切換至本地備援
+                speakLocalFallback(message);
             }
         }
 
@@ -528,7 +535,7 @@
                 inactivityTimer = setTimeout(() => {
                     // 達到 5 秒催促點
                     currentInstruction = 'reminder';
-                    guidanceText.textContent = "超過 5 秒未互動！請點擊喇叭圖示，聆聽 AI 助教的催促提醒！";
+                    guidanceText.textContent = "超過 5 秒未互動！請點擊頭像，聆聽小萊恩的催促提醒！";
                     coreSectionsContainer.classList.add('shake'); // 核心區塊晃動 (瞬時)
                     setTimeout(() => coreSectionsContainer.classList.remove('shake'), 1000);
                     
@@ -638,16 +645,14 @@
 
         // --- 頁面初始化 ---
         window.addEventListener('load', () => {
-            // 初始提示在 DOM 中設置，等待用戶點擊喇叭按鈕
-            guidanceText.textContent = `點擊喇叭圖示，開始 ${NPC_TITLE} 的介紹。`;
+            // 初始提示在 DOM 中設置，等待用戶點擊頭像按鈕
+            guidanceText.textContent = `點擊頭像，開始 ${NPC_TITLE} 的介紹。`;
             
             document.querySelectorAll('.accordion-content').forEach(content => {
                 if (!content.classList.contains('active')) {
                     content.style.maxHeight = 0;
                 }
             });
-            
-            // 移除音樂初始化
         });
     </script>
 </body>

@@ -309,15 +309,10 @@
         const npcContainer = document.getElementById('npc-container'); 
         // 移除 musicControl 變數
 
-        // --- 背景音樂 (已移除相關函數) ---
-        // 移除 setupMusic, toggleMusic 函數
-        
-        // --- 播放與控制邏輯 (修正問題 1) ---
+        // --- 播放與控制邏輯 ---
 
         /** * 啟用 Loading 狀態並更新文字 */
         function startLoading(message) {
-            // 背景音樂相關邏輯已移除
-
             if (audio && !audio.paused) {
                 audio.pause();
                 audio.currentTime = 0;
@@ -326,25 +321,52 @@
             speakerIcon.classList.add('hidden');
             loadingSpinner.classList.remove('hidden');
             guidanceText.textContent = message;
+            // 停止瀏覽器語音合成
+            window.speechSynthesis.cancel(); 
         }
 
         /** * 停止 Loading 狀態並恢復按鈕 */
         function stopLoading(message) {
-            // 背景音樂相關邏輯已移除
-            
             guidanceText.textContent = message;
             speakerBtn.disabled = false;
             speakerIcon.classList.remove('hidden');
             loadingSpinner.classList.add('hidden');
         }
+        
+        /**
+         * 瀏覽器內建語音備援 (Local Fallback)
+         * @param {string} message - 要說的文本
+         */
+        function speakLocalFallback(message) {
+            startLoading(`🔊 備援語音播放中... (${NPC_TITLE})`);
+            
+            const utterance = new SpeechSynthesisUtterance(message);
+            utterance.lang = 'zh-TW'; // 設定為中文
+            
+            utterance.onend = () => {
+                stopLoading(`點擊喇叭圖示，聆聽 ${NPC_TITLE} 的介紹。`);
+                if (currentInstruction === 'active') {
+                    startInactivityTimer();
+                } else if (currentInstruction === 'quiz_ready') {
+                    guidanceText.textContent = "請點擊 [前往測驗] 按鈕，開始檢視學習成果！";
+                }
+            };
+
+            // 確保音訊播放結束時才停止 loading
+            try {
+                 window.speechSynthesis.speak(utterance);
+            } catch (error) {
+                 console.error("瀏覽器語音備援失敗:", error);
+                 stopLoading(`備援語音失敗。請檢查您的瀏覽器設定。`);
+            }
+        }
+
 
         /**
          * 處理喇叭按鈕的點擊事件，根據狀態播放正確的語音
          */
         function handleSpeakerClick() {
             if (speakerBtn.disabled) return; 
-
-            // 移除 Tone.js 初始化檢查
 
             // 點擊按鈕，移除持續的光暈提醒
             npcContainer.classList.remove('reminder-glow');
@@ -365,14 +387,14 @@
                 return;
             }
             
-            // 3. 點擊後隨即出現語音 (立刻呼叫 API)
+            // 點擊後隨即出現語音 (立刻呼叫 API)
             speakGuidance(messageToSpeak);
             
             coreSectionsContainer.classList.remove('shake');
             document.querySelector('header').classList.remove('shake');
         }
 
-        // --- TTS 輔助函數 (保持與上版一致) ---
+        // --- TTS 輔助函數 (PCM to WAV 轉換) ---
         function base64ToArrayBuffer(base64) {
             const binary_string = window.atob(base64);
             const len = binary_string.length;
@@ -440,9 +462,12 @@
                 if (!response.ok) {
                     const status = response.status;
                     
-                    // 針對 403 Forbidden 錯誤提供明確的中文引導
+                    // NEW: 403 錯誤處理，切換至本地備援語音
                     if (status === 403) {
-                         throw new Error(`403 Forbidden: 請檢查您的 API Key 權限，或確認 TTS 服務 (${TTS_MODEL}) 是否已啟用。`);
+                         console.warn("TTS API 權限不足 (403 Forbidden)。切換至瀏覽器本地語音備援。");
+                         stopLoading(`🚨 錯誤 403：API 權限不足，正使用本地備援語音。`);
+                         speakLocalFallback(message);
+                         return; // 成功切換備援，結束函式
                     }
                     
                     throw new Error(`API 錯誤: ${status} ${response.statusText}`);
@@ -463,7 +488,7 @@
                     const wavBlob = pcmToWav(pcm16, sampleRate);
                     const audioUrl = URL.createObjectURL(wavBlob);
                     
-                    // 確保每次都創建新的 Audio 實例，避免舊的狀態干擾
+                    // 確保每次都創建新的 Audio 實例
                     audio = new Audio(audioUrl);
                     
                     audio.onplay = () => {
@@ -475,7 +500,6 @@
                         if (currentInstruction === 'active') {
                              startInactivityTimer();
                         } else if (currentInstruction === 'quiz_ready') {
-                             // 課程完成後的引導，直接設定最終文字
                              guidanceText.textContent = "請點擊 [前往測驗] 按鈕，開始檢視學習成果！";
                         }
                     };
@@ -485,9 +509,9 @@
                     throw new Error("API 返回的音訊數據結構無效或缺少數據。");
                 }
             } catch (error) {
-                console.error("TTS 發生錯誤:", error);
+                console.error("TTS 發生嚴重錯誤:", error);
+                // 最終備援：如果連備援都失敗，則只更新文字提示
                 stopLoading(`語音生成失敗。 (錯誤: ${error.message})`);
-                // 即使失敗也要讓計時器或流程繼續
                 if (currentInstruction === 'active') {
                     startInactivityTimer();
                 }
@@ -495,7 +519,7 @@
         }
 
 
-        // --- 課程狀態與計時器邏輯 ---
+        // --- 課程狀態與計時器邏輯 (保持原樣) ---
         
         /** * 啟動 5 秒不活動提醒計時器 */
         function startInactivityTimer() {

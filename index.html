@@ -53,7 +53,7 @@
         }
         /* 展開狀態 */
         .accordion-content.active {
-            max-height: 500px; /* 設置一個足夠大的高度來展示內容 */
+            max-height: 800px; /* 增加最大高度以容納更多內容 */
             padding: 1rem;
         }
         /* 箭頭旋轉效果 */
@@ -140,7 +140,7 @@
         <section class="card p-6">
             <h2 class="text-2xl font-bold text-gray-800 mb-4">簡介：系統層級智慧功能</h2>
             <p class="text-gray-600 leading-relaxed">
-                Apple Intelligence 是蘋果公司首次將[生成式 AI 模型]深度整合到 [iOS、iPadOS 和 macOS] 中的[系統層級智慧功能]。它專注於個人化、隱私保護，並在所有 App 中提供一致的智慧輔助。
+                Apple Intelligence 是蘋果公司首次將【生成式 AI 模型】深度整合到 【iOS、iPadOS 和 macOS】 中的【系統層級智慧功能】。它專注於個人化、隱私保護，並在所有 App 中提供一致的智慧輔助。
             </p>
         </section>
 
@@ -161,17 +161,17 @@
                     <tbody>
                         <tr>
                             <td class="font-semibold text-gray-700 w-1/4">系統級整合</td>
-                            <td class="w-1/2">AI 功能深度植入作業系統核心，可在[所有 App (原生或第三方)]的[輸入框中調用]。</td>
+                            <td class="w-1/2">AI 功能深度植入作業系統核心，可在【所有 App (原生或第三方)】的【輸入框中調用】。</td>
                             <td class="w-1/4">寫郵件時，可立即請 AI 調整語氣為「專業」或「輕鬆」。</td>
                         </tr>
                         <tr>
                             <td class="font-semibold text-gray-700">隱私優先架構</td>
-                            <td>優先採用 [裝置端處理 (On-Device Processing)]，確保[個人資料不離開裝置]。</td>
+                            <td>優先採用 【裝置端處理 (On-Device Processing)】，確保【個人資料不離開裝置】。</td>
                             <td>總結個人訊息對話內容時，數據完全在 iPhone 內運算。</td>
                         </tr>
                         <tr>
                             <td class="font-semibold text-gray-700">私密雲端運算</td>
-                            <td>若遇複雜任務需要雲端運算，則透過 [Private Cloud Compute (PCC)]，保證資料[不被蘋果存取或儲存]。</td>
+                            <td>若遇複雜任務需要雲端運算，則透過 【Private Cloud Compute (PCC)】，保證資料【不被蘋果存取或儲存】。</td>
                             <td>生成複雜圖像時，可安全地利用雲端資源而不犧牲隱私。</td>
                         </tr>
                     </tbody>
@@ -194,9 +194,10 @@
                     </h3>
                 </div>
                 <div id="writing-tools" class="accordion-content">
-                    <ul class="list-disc list-inside space-y-2 text-gray-700 ml-4 p-4 border-t border-gray-200">
-                        <li>🎯 [系統級覆蓋]： 無論是寫 [Email、筆記、還是訊息]，皆可[一鍵呼叫 AI 助理]。</li>
-                        <li>[功能包括]： [潤飾 (Rewrite)] (調整語氣、風格)、[校對 (Proofread)] (修正語法、標點)、[總結 (Summarize)] (長文章或郵件摘要)。</li>
+                    <ul class="list-disc list-inside space-y-3 text-gray-700 ml-4 p-4 border-t border-gray-200">
+                        <li>【系統級寫作輔助】：可在系統【任何文本輸入區域】（如郵件、訊息、備忘錄）一鍵呼叫。</li>
+                        <li>【主要功能】：【潤飾/風格調整】（改變語氣：專業、輕鬆、簡潔）、【校對/語法修正】（自動修正錯誤並建議優化）、【總結/摘要】（快速提取長文重點）。</li>
+                        <li class="mt-4 text-sm text-gray-500">【詳細設定方式】：在輸入框中【長按或點擊 AI 魔法棒圖示】即可啟動寫作工具。可預設【風格偏好】或【目標字數】範圍。</li>
                     </ul>
                 </div>
 
@@ -208,10 +209,11 @@
                     </h3>
                 </div>
                 <div id="image-creation" class="accordion-content">
-                    <ul class="list-disc list-inside space-y-2 text-gray-700 ml-4 p-4 border-t border-gray-200">
-                        <li>[🎨 影像樂園 (Image Playground)]： 透過[簡單的文字描述]，快速在[裝置上生成圖片]。</li>
-                        <li>[類型]： 支援[動畫 (Animation)]、[素描 (Sketch)]、[插畫 (Illustration)] 三種風格。</li>
-                        <li>[🆕 Genmoji]： 透過[文字描述]，即時生成[全新的、獨創的表情符號]，可用於[訊息或作為反應 (Tapback)]。</li>
+                    <ul class="list-disc list-inside space-y-3 text-gray-700 ml-4 p-4 border-t border-gray-200">
+                        <li>【影像樂園 (Image Playground)】：透過【簡單的文字描述】，在【裝置端快速生成】圖片。</li>
+                        <li>【風格選項】：支援【動畫 (Animation)】、【素描 (Sketch)】、【插畫 (Illustration)】 等多種藝術風格。</li>
+                        <li>【Genmoji】：透過【自定義文字】生成獨特的【AI 表情符號】，可直接在訊息App中作為反應或貼圖使用。</li>
+                        <li class="mt-4 text-sm text-gray-500">【詳細設定方式】：在「訊息 App」的【輸入框左側點擊 + 號】，選擇 【影像樂園】 即可進入創作介面。</li>
                     </ul>
                 </div>
 
@@ -223,9 +225,11 @@
                     </h3>
                 </div>
                 <div id="siri-context" class="accordion-content">
-                    <ul class="list-disc list-inside space-y-2 text-gray-700 ml-4 p-4 border-t border-gray-200">
-                        <li>[👂 更懂你]： Siri 不再僅限於語音指令，可[感知螢幕上的內容]。</li>
-                        <li>[跨 App 整合]： 能執行更複雜、[跨應用程式的指令]，例如：「[把這張照片傳給媽媽]」、「[刪除我上次開會時收到的那封郵件]」。</li>
+                    <ul class="list-disc list-inside space-y-3 text-gray-700 ml-4 p-4 border-t border-gray-200">
+                        <li>【螢幕內容感知】：Siri 現在能夠【理解螢幕上正在顯示的內容】，例如：看到某個地址時，可直接要求「將這個地址儲存到通訊錄」。</li>
+                        <li>【跨 App 記憶】：能執行涉及【多個應用程式和記憶上下文】的複雜指令。</li>
+                        <li>【指令範例】：例如：「找出 Jane 傳給我關於上次旅行的郵件裡那張【穿紅色外套】的照片」。</li>
+                        <li class="mt-4 text-sm text-gray-500">【詳細設定方式】：預設長按側邊按鈕或語音喚醒，但須到 【設定 > Siri 與搜尋】 中開啟【螢幕內容使用權限】以啟動上下文感知功能。</li>
                     </ul>
                 </div>
             </div>
@@ -248,15 +252,15 @@
                     <tbody>
                         <tr>
                             <td class="font-semibold text-gray-700 w-1/3">郵件 (Mail)</td>
-                            <td class="w-2/3">[智慧收件箱]： [自動分類高優先級郵件]。[摘要功能]： [長篇郵件一鍵總結]，快速掌握重點。</td>
+                            <td class="w-2/3">【智慧收件箱】： 【自動分類高優先級郵件】。【摘要功能】： 【長篇郵件一鍵總結】，快速掌握重點。</td>
                         </tr>
                         <tr>
                             <td class="font-semibold text-gray-700">提醒事項 / 備忘錄</td>
-                            <td>[自動任務建議]： 根據[郵件、訊息、行事曆內容]，[主動建議][使用者可加入的待辦事項或任務]。</td>
+                            <td>【自動任務建議】： 根據【郵件、訊息、行事曆內容】，【主動建議】【使用者可加入的待辦事項或任務】。</td>
                         </tr>
                         <tr>
                             <td class="font-semibold text-gray-700">照片 (Photos)</td>
-                            <td>[搜尋強化]： 支援[自然語言搜尋]，例如：「[找出 Jane 穿紅色外套在海邊拍的照片]」。[清除功能 (Clean Up)]： [智慧移除照片中不需要的背景物體或人物]。</td>
+                            <td>【搜尋強化】： 支援【自然語言搜尋】，例如：「【找出 Jane 穿紅色外套在海邊拍的照片】」。【清除功能 (Clean Up)】： 【智慧移除照片中不需要的背景物體或人物】。</td>
                         </tr>
                     </tbody>
                 </table>
@@ -289,9 +293,9 @@
             'siri-context': "學得真快！情境感知 Siri 是實現跨應用程式智慧的關鍵喔。" 
         };
         const SECTION_SUMMARIES = { 
-            'writing-tools': "[寫作工具]是您在郵件、備忘錄中最實用的 AI 助理。它能幫您[一鍵潤飾、校對或總結]長篇文字，大幅提升寫作效率。",
-            'image-creation': "您正在了解[圖像創作]能力。這包含了[影像樂園]和 [Genmoji]，讓您能快速生成[各種風格的圖片]和[獨特的表情符號]。",
-            'siri-context': "[情境感知 Siri]是 Apple Intelligence 的核心。她現在能[理解螢幕上的內容]，並執行[跨應用程式的複雜指令]。"
+            'writing-tools': "【寫作工具】是您在郵件、備忘錄中最實用的 AI 助理。它能幫您【一鍵潤飾、校對或總結】長篇文字，大幅提升寫作效率。",
+            'image-creation': "您正在了解【圖像創作】能力。這包含了【影像樂園】和 【Genmoji】，讓您能快速生成【各種風格的圖片】和【獨特的表情符號】。",
+            'siri-context': "【情境感知 Siri】是 Apple Intelligence 的核心。她現在能【理解螢幕上的內容】，並執行【跨應用程式的複雜指令】。"
         };
         
         const completedSections = new Set();
@@ -373,10 +377,16 @@
         }
 
 
-        // --- 播放與控制邏輯 (與上一版修正錯誤的邏輯相同) ---
+        // --- 播放與控制邏輯 (修正問題 1) ---
 
         /** * 啟用 Loading 狀態並更新文字 */
         function startLoading(message) {
+            // 確保語音播放時停止背景音樂，避免干擾
+            if (polySynth && Tone.Transport.state === "started") {
+                Tone.Transport.pause();
+                musicControl.textContent = '🔊 背景音樂: 自動暫停'; 
+            }
+
             if (audio && !audio.paused) {
                 audio.pause();
                 audio.currentTime = 0;
@@ -389,6 +399,14 @@
 
         /** * 停止 Loading 狀態並恢復按鈕 */
         function stopLoading(message) {
+            // 語音播放結束，恢復背景音樂 (如果之前是播放狀態)
+            if (polySynth && Tone.Transport.state !== "started") {
+                 Tone.Transport.start();
+                 musicControl.textContent = '🎶 背景音樂: 播放中 (點擊暫停)';
+            } else if (polySynth) {
+                 musicControl.textContent = '🎶 背景音樂: 播放中 (點擊暫停)';
+            }
+            
             guidanceText.textContent = message;
             speakerBtn.disabled = false;
             speakerIcon.classList.remove('hidden');
@@ -409,19 +427,24 @@
             // 點擊按鈕，移除持續的光暈提醒
             npcContainer.classList.remove('reminder-glow');
 
+            let messageToSpeak;
+
             if (currentInstruction === 'initial' || currentInstruction === 'active') {
-                speakGuidance(TTS_INITIAL);
+                messageToSpeak = TTS_INITIAL;
                 currentInstruction = 'active'; 
             } else if (currentInstruction === 'reminder') {
-                speakGuidance(TTS_REMINDER);
+                messageToSpeak = TTS_REMINDER;
                 currentInstruction = 'active'; 
             } else if (currentInstruction === 'quiz_ready') {
-                 // 3. 課程完成後引導進行測驗
-                 speakGuidance(TTS_QUIZ_INSTRUCTION);
+                 messageToSpeak = TTS_QUIZ_INSTRUCTION;
                  currentInstruction = 'finished'; 
             } else if (currentInstruction === 'quiz_pending_5s' || currentInstruction === 'finished') {
                 guidanceText.textContent = currentInstruction === 'finished' ? "課程已結束，請前往測驗。" : "請稍候，課程完成提醒即將發出。";
+                return;
             }
+            
+            // 3. 點擊後隨即出現語音 (立刻呼叫 API)
+            speakGuidance(messageToSpeak);
             
             coreSectionsContainer.classList.remove('shake');
             document.querySelector('header').classList.remove('shake');
@@ -471,7 +494,6 @@
 
         async function speakGuidance(message) {
             resetInactivityTimer();
-            // TTS 延遲是網路延遲和 API 處理時間，無法消除。
             startLoading(`${NPC_TITLE} 正在生成語音中，請稍候...`);
             
             const apiKey = ""; 
@@ -492,7 +514,9 @@
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify(payload)
                 });
-                if (!response.ok) throw new Error(`API 錯誤: ${response.statusText}`);
+                if (!response.ok) {
+                    throw new Error(`API 錯誤: ${response.status} ${response.statusText}`);
+                }
 
                 const result = await response.json();
                 const part = result?.candidates?.[0]?.content?.parts?.[0];
@@ -509,6 +533,7 @@
                     const wavBlob = pcmToWav(pcm16, sampleRate);
                     const audioUrl = URL.createObjectURL(wavBlob);
                     
+                    // NEW: 確保每次都創建新的 Audio 實例，避免舊的狀態干擾
                     audio = new Audio(audioUrl);
                     
                     audio.onplay = () => {
@@ -526,11 +551,15 @@
                     };
                     audio.play();
                 } else {
-                    throw new Error("API 返回的音訊數據結構無效。");
+                    throw new Error("API 返回的音訊數據結構無效或缺少數據。");
                 }
             } catch (error) {
                 console.error("TTS 發生錯誤:", error);
                 stopLoading(`語音生成失敗。 (錯誤: ${error.message})`);
+                // 即使失敗也要讓計時器或流程繼續
+                if (currentInstruction === 'active') {
+                    startInactivityTimer();
+                }
             }
         }
 
@@ -641,7 +670,8 @@
 
             if (!isActive) {
                 content.classList.add('active');
-                content.style.maxHeight = content.scrollHeight + "px";
+                // 使用 scrollHeight 確保內容完全展開
+                content.style.maxHeight = content.scrollHeight + 100 + "px"; 
                 icon.classList.add('rotate');
             } else {
                 content.classList.remove('active');
@@ -668,4 +698,3 @@
     </script>
 </body>
 </html>
-

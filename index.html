@@ -280,8 +280,8 @@
     <script>
         // --- 狀態和配置 ---
         const TTS_MODEL = "gemini-2.5-flash-preview-tts";
-        // 語音已更改為 Puck (歡快/活潑)，原為 Charon
-        const TTS_VOICE = "Puck"; 
+        // 語音已更改為 Fenrir (活潑男聲)，原為 Puck
+        const TTS_VOICE = "Fenrir"; 
 
         // IP 角色更名為 小萊恩
         const NPC_TITLE = "小萊恩"; 
@@ -454,9 +454,11 @@
             const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/${TTS_MODEL}:generateContent?key=${apiKey}`;
 
             const payload = {
+                // 修正語音要求：使用 "relaxed and cheerful tone" 來確保調性
                 contents: [{ parts: [{ text: `Say in a relaxed and cheerful tone: ${message}` }] }],
                 generationConfig: {
                     responseModalities: ["AUDIO"],
+                    // TTS_VOICE 已切換為 Fenrir
                     speechConfig: { voiceConfig: { prebuiltVoiceConfig: { voiceName: TTS_VOICE } } }
                 },
                 model: TTS_MODEL
@@ -502,7 +504,8 @@
                     audio = new Audio(audioUrl);
                     
                     audio.onplay = () => {
-                        guidanceText.textContent = `播放中... (${NPC_TITLE}: Puck)`;
+                        // 狀態顯示更新為 Fenrir
+                        guidanceText.textContent = `播放中... (${NPC_TITLE}: Fenrir)`;
                     };
                     audio.onended = () => {
                         stopLoading(`點擊頭像，聆聽 ${NPC_TITLE} 的介紹。`);

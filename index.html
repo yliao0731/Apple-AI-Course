@@ -105,17 +105,19 @@
                 </div>
             </div>
 
-            <!-- NPC 語音引導區塊 (小萊恩 IP) - 已移除語音功能，改為純文字顯示 -->
+            <!-- NPC 語音引導區塊 -->
             <div id="npc-container" class="mt-4 p-3 bg-white/10 backdrop-blur-sm rounded-xl flex items-center shadow-lg transition duration-300">
-                <!-- 圖像顯示 - 小萊恩 IP -->
-                <div class="relative p-0 mr-3 rounded-full bg-transparent">
+                <!-- 為圖像容器添加 onclick 事件，使其可點擊以啟動語音 -->
+                <div class="relative p-0 mr-3 rounded-full bg-transparent cursor-pointer" onclick="startNarration()">
+                    <!-- 使用一個有效的圖片 URL 替代 "uploaded:" -->
                     <img id="speaker-icon" 
-                           src="uploaded:老萊恩去背.png-a7f1b070-e704-41fd-85fc-1c478bbb0588" 
-                           alt="小萊恩 IP 圖形" 
-                           class="w-12 h-12 rounded-full object-cover">
+                         src="https://i.imgur.com/8Q9P2a7.png" 
+                         alt="小萊恩 IP 圖形" 
+                         class="w-12 h-12 rounded-full object-cover"
+                         onerror="this.src='https://placehold.co/48x48/FDE047/1f2937?text=Ryan'; this.onerror=null;">
                 </div>
                 
-                <span id="guidance-text" class="text-white text-sm font-medium">點擊頭像，開始小萊恩的介紹。</span>
+                <span id="guidance-text" class="text-white text-sm font-medium">點擊我的頭像，開始課程導覽！</span>
             </div>
             
         </div>
@@ -261,14 +263,29 @@
         &copy; 2025 Apple Intelligence 教學資料 - 僅供參考與學習
     </footer>
 
-    <!-- JavaScript for Interactivity -->
+    <!-- JavaScript for Interactivity and Speech -->
     <script>
-        // --- 狀態和配置 (純文字模式) ---
+        // --- 語音合成 API ---
+        // 【移除】所有 speech API 相關程式碼
+        // const synth = window.speechSynthesis;
+        // let voices = []; 
+        // function updateVoices() { ... }
+        // if (synth.onvoiceschanged !== undefined) { ... }
+        // updateVoices();
+        
+        /**
+         * 【移除】文本轉語音的核心函數
+         */
+        // function speakText(text) { ... }
+
+        // --- 狀態和配置 ---
         const NPC_TITLE = "小萊恩"; 
         
         // 文字引導內容
-        const TEXT_INITIAL = `我是 ${NPC_TITLE}！歡迎來到 Apple Intelligence 課程。請點擊下方的【三大核心能力】區塊，開始探索智慧功能和隱私基礎吧！`; 
-        const TEXT_REMINDER = `嘿，同學！我是 ${NPC_TITLE}！時間到了，請記得點擊任一核心能力區塊 (例如：寫作工具) 展開詳細內容喔！`;
+        // 【修改】移除 "我是小萊恩"
+        const TEXT_INITIAL = `歡迎來到 Apple Intelligence 課程！請點擊下方的【三大核心能力】區塊，開始探索智慧功能和隱私基礎吧！`; 
+        // 【修改】移除 "我是小萊恩"
+        const TEXT_REMINDER = `嘿，同學！時間到了，請記得點擊任一核心能力區塊 (例如：寫作工具) 展開詳細內容喔！`;
         const TEXT_COMPLETED_PROMPT = `課程已全部完成！請點擊右上角的 [前往測驗] 按鈕，檢視您的學習成果吧！`; 
 
         // 不同的讚美方式 & 內容重點
@@ -285,7 +302,7 @@
         
         const completedSections = new Set();
         let inactivityTimer = null;
-        // 狀態：initial -> active (學習中) -> quiz_pending_5s (5秒倒數) -> finished (已完成)
+        // 狀態：'initial' -> 'active' -> 'reminder' -> 'quiz_pending' -> 'finished'
         let currentInstruction = 'initial'; 
 
         // --- DOM 元素 ---
@@ -295,7 +312,19 @@
 
         // --- 互動與計時器邏輯 ---
         
-        /** * 啟動 5 秒不活動提醒計時器 (純文字催促) */
+        /** 啟動導覽與語音的函數 */
+        function startNarration() {
+            // 如果不是初始狀態，就不要重複觸發
+            if (currentInstruction !== 'initial') return;
+
+            guidanceText.textContent = TEXT_INITIAL;
+            // speakText(TEXT_INITIAL); // 【移除】播放初始語音
+            
+            currentInstruction = 'active';
+            startInactivityTimer(); // 啟動計時器
+        }
+
+        /** * 啟動 5 秒不活動提醒計時器 */
         function startInactivityTimer() {
             clearTimeout(inactivityTimer);
             if (currentInstruction === 'active') {
@@ -303,6 +332,7 @@
                     // 達到 5 秒催促點
                     currentInstruction = 'reminder';
                     guidanceText.textContent = TEXT_REMINDER;
+                    // speakText(TEXT_REMINDER); // 【移除】加入語音提醒
                     
                     // 視覺提醒：晃動並持續光暈
                     coreSectionsContainer.classList.add('shake'); 
@@ -343,21 +373,22 @@
             if (!completedSections.has(id)) {
                 completedSections.add(id);
                 
-                // 不同的讚美方式 + 內容總結 (純文字顯示)
                 const praise = SECTION_PRAISES[id];
                 const summary = SECTION_SUMMARIES[id];
-                guidanceText.textContent = `${praise}！ ${summary}`;
+                const feedbackText = `${praise}！ ${summary}`;
+                guidanceText.textContent = feedbackText;
+                // speakText(feedbackText); // 【移除】播放反饋語音
                 
                 // 檢查課程完成度
                 if (completedSections.size === 3) {
-                    // 進入 5 秒倒數狀態
-                    currentInstruction = 'quiz_pending_5s';
+                    currentInstruction = 'quiz_pending';
                     
                     // 課程完成後 5 秒提醒
                     setTimeout(() => {
-                        if (currentInstruction === 'quiz_pending_5s') {
+                        if (currentInstruction === 'quiz_pending') {
                             currentInstruction = 'finished'; 
                             guidanceText.textContent = TEXT_COMPLETED_PROMPT; 
+                            // speakText(TEXT_COMPLETED_PROMPT); // 【移除】播放完成語音
                             
                             // 頂部區塊晃動 (瞬時)
                             document.querySelector('header').classList.add('shake'); 
@@ -371,9 +402,11 @@
                     currentInstruction = 'active'; 
                 }
             } else {
-                 // 已學習過，給予簡單提示
-                 guidanceText.textContent = "您已經學過這一區塊囉！請繼續探索其他核心能力。";
-                 currentInstruction = 'active';
+                // 已學習過，給予簡單提示
+                const learnedText = "您已經學過這一區塊囉！請繼續探索其他核心能力。";
+                guidanceText.textContent = learnedText;
+                // speakText(learnedText); // 【移除】播放已學過提示
+                currentInstruction = 'active';
             }
         }
 
@@ -400,7 +433,6 @@
             // 展開或收合目標區塊
             if (!isActive) {
                 content.classList.add('active');
-                // 使用 scrollHeight 確保內容完全展開
                 content.style.maxHeight = content.scrollHeight + 100 + "px"; 
                 icon.classList.add('rotate');
             } else {
@@ -410,14 +442,9 @@
             }
         }
 
-
         // --- 頁面初始化 ---
         window.addEventListener('load', () => {
-            // 初始引導
-            guidanceText.textContent = TEXT_INITIAL;
-            currentInstruction = 'active';
-            startInactivityTimer(); // 啟動初始 5 秒計時
-            
+            // 頁面載入時僅設定好初始狀態，不自動播放語音。等待使用者點擊。
             // 確保所有區塊初始為收合狀態
             document.querySelectorAll('.accordion-content').forEach(content => {
                 if (!content.classList.contains('active')) {
@@ -428,3 +455,5 @@
     </script>
 </body>
 </html>
+
+

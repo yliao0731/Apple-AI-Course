@@ -97,7 +97,7 @@
                 <!-- 導航按鈕 -->
                 <div class="space-x-3 flex items-center">
                     <a href="quiz.html" class="bg-indigo-500 hover:bg-indigo-600 text-white text-sm font-semibold py-2 px-4 rounded-lg transition duration-200 shadow-md">
-                        前往測驗
+                        隨堂練習
                     </a>
                     <a href="hub.html" class="bg-gray-500 hover:bg-gray-600 text-white text-sm font-semibold py-2 px-4 rounded-lg transition duration-200 shadow-md">
                         回中心頁
@@ -112,12 +112,12 @@
                     <!-- 使用一個有效的圖片 URL 替代 "uploaded:" -->
                     <img id="speaker-icon" 
                          src="https://i.imgur.com/8Q9P2a7.png" 
-                         alt="小萊恩 IP 圖形" 
+                         alt="老萊恩 IP 圖形" 
                          class="w-12 h-12 rounded-full object-cover"
-                         onerror="this.src='https://placehold.co/48x48/FDE047/1f2937?text=Ryan'; this.onerror=null;">
+                         onerror="this.src='https://placehold.co/48x48/FDE047/1f2937?text=老萊恩'; this.onerror=null;">
                 </div>
                 
-                <span id="guidance-text" class="text-white text-sm font-medium">點擊我的頭像，開始課程導覽！</span>
+                <span id="guidance-text" class="text-white text-sm font-medium"></span>
             </div>
             
         </div>
@@ -284,9 +284,9 @@
         // 文字引導內容
         // 【修改】移除 "我是小萊恩"
         const TEXT_INITIAL = `歡迎來到 Apple Intelligence 課程！請點擊下方的【三大核心能力】區塊，開始探索智慧功能和隱私基礎吧！`; 
-        // 【修改】移除 "我是小萊恩"
-        const TEXT_REMINDER = `嘿，同學！時間到了，請記得點擊任一核心能力區塊 (例如：寫作工具) 展開詳細內容喔！`;
-        const TEXT_COMPLETED_PROMPT = `課程已全部完成！請點擊右上角的 [前往測驗] 按鈕，檢視您的學習成果吧！`; 
+        // 【修改】移除 "我是小萊恩" 和 "時間到了"
+        const TEXT_REMINDER = `嘿，同學！請記得點擊任一核心能力區塊 (例如：寫作工具) 展開詳細內容喔！`;
+        const TEXT_COMPLETED_PROMPT = `課程已全部完成！請點擊右上角的 [隨堂練習] 按鈕，檢視您的學習成果吧！`; 
 
         // 不同的讚美方式 & 內容重點
         const SECTION_PRAISES = {
@@ -455,5 +455,8 @@
     </script>
 </body>
 </html>
+
+
+
 
 
